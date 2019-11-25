@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<html>
+        <head>
+     
+        </head>
+        <body>
+{%block body%}
+        <div class='container'>
+            <form method='post' enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form}}
+            <button class='btn btn-primary' type='submit'>Submit</button>
+            </form>
+            </div>
+            <div class='container'>
+                <div class='thread_title'><h3>{{thread.thread_title}}</h3></div>
+                <div class='thread_mail'>{{thread.op_mail}}</div>
+                <div class='thread_img'><img src='{{thread.image.url}}'width='240' /></div>
+                <div clas='thread_body'>{{thread.thread_body}}</div>
+            </div>
+        
+            
+                {%for answer in thread.thread_ans.all %}
+                <div class='container'>
+                <div class='answer_title'>{{answer.answer_title}}</div>
+                <div class='answer_mail'>{{answer.answer_mail}}</div>
+                    <div class='answer_img'><img src='{{answer.image.url}}'width='240'/></div>
+                <div class='answer_body'>{{answer.answer_body}}</div>
+                </div>
+           {%endfor%}
+
+            {%endblock%}
+        </body>
+        </html>

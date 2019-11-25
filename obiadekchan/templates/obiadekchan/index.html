@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load static %}
+<html>
+        <head>
+       
+        </head>
+        <body>
+            {%block body%}
+            <br>
+        <div class='container'>
+            <form method='post' enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form}}
+            <button class='btn btn-primary' type='submit' value='post_thread' name='post_thread'>Submit</button>
+            </form>
+            </div>
+            {%for thread in q2 %}
+            <div class='container'>
+            <div class='thread_title'><h3>{{thread.thread_title}}</h3></div>
+            <div class='thread_mail'>{{thread.op_mail}}</div>
+            {%if thread.image%}
+            <div class='thread_img'><img src='{{thread.image.url}}'width='240' /></div>
+            {%endif%}
+            <div clas='thread_body'>{{thread.thread_body}}</div>
+            <form method='post'>
+            {% csrf_token %}
+            <input type='checkbox' name='report_thread' value='{{thread.id}}'>
+            <button type='submit' value='{{thread.id}}'  name='report_thread'>Submit thread report</button>
+            {% if user.is_authenticated %}
+            <button type='submit'  value='{{thread.id}}' name='delete_thread'>Delete thread</button>
+            {%endif%}
+        </form>
+            <a href='{% url "obiadekchan:thread" thread.id %}'>Show more</a>
+            </div>
+            
+            {%for answer in thread.thread_ans.all %}
+            <div class='container'>
+                <p>testtest</p>
+                <div class='answer_title'>{{answer.answer_title}}</div>
+                <div class='answer_mail'>{{answer.answer_mail}}</div>
+                {%if answer.image%}
+                    <div class='answer_img'><img src='{{answer.image.url}}'width='240'/></div>
+                {%endif%}
+                <div class='answer_body'>{{answer.answer_body}}</div>
+                <form method='post'>
+                        {% csrf_token %}
+                        <input type='checkbox' name='report_answer' value='{{answer.id}}'>
+                        {% if user.is_authenticated %}
+                        <button type='submit' value='{{answer.id}}' name='delete_answer'>Delete answer</button>
+                            {%endif%}
+                        <button type='submit' value='{{answer.id}}' name='report_answer'>Submit answer report</button>
+                    </form>
+                </div>
+           
+            {%endfor%}
+
+        {%endfor%}
+  
+{%endblock%}
+        </body>
+        </html>
