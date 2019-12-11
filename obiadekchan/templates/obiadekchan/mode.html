@@ -13,6 +13,9 @@
              <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
              <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+             <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
              <style>
                     table {
                       font-family: arial, sans-serif;
@@ -30,9 +33,28 @@
                       background-color: #dddddd;
                     }
                     </style>
+                      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+                      <link rel="stylesheet" href="/resources/demos/style.css">
+                      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+                      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+                      <link rel="stylesheet" type="text/css" href="jquery.datetimepicker.min.css"/>
+
+                      <script>
+                      $( function() {
+                        $( "#datepicker" ).datepicker();
+                      } );
+                      </script>
             <title>Moderator panel</title>
             </head>
             <body>
+                    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                          
+                              </div>
+                            </div>
+                          </div>
                 <h2>Reported threads</h2>
                 <table>
                     <tr>
@@ -40,14 +62,48 @@
                         <th>Thread body</th>
                         <th>Thread ip</th>
                         <th>Report reason</th>
+                        <th>Delete</th>
+                        <th>Ban</th>
                     </tr>
                     {%for thread in threads%}
                     <tr>
-                        <td>{{thread.thread_name}}</td>
+                        <td>{{thread.thread_title}}</td>
                         <td>{{thread.thread_body}}</td>
                         <td>{{thread.ip_address}}</td>
                         <td>{{thread.rep_reason}}</td>
+                        <td><form method='post' >{% csrf_token %}<button type='submit' name='del_thread' value='{{thread.id}}'>Delete thread</button></form></td>
+                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{thread.id}}">
+                                Ban user
+                              </button>
+                            </td>
+                       
+            
                     </tr>
+                    <!-- Modal -->
+<div class="modal fade" id="exampleModal{{thread.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Ban user</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method='post'>{%csrf_token%}
+                   <p>Reason: <input class="u-full-width" type="text" name="b_reason" style='border-radius:0px'/></p>
+                    <p>Date when ban expires: <input type="text" class="datepicker" name='b_length'></p>
+                    <button type="submit" class="btn btn-primary" name='ban_ip' value='{{thread.id}}'>Ban</button>
+                </form>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            
+            </div>
+          </div>
+        </div>
+      </div>
                     {%endfor%}
                 </table>
                 <h2>Reported posts</h2>
@@ -57,15 +113,60 @@
                         <th>Post body</th>
                         <th>Poster ip</th>
                         <th>Report reason</th>
+                        <th>Delete</th>
+                        <th>Ban</th>
                     </tr>
                     {%for answer in answers%}
                     <tr>
-                        <td>{{answer.thread_name}}</td>
-                        <td>{{answer.thread_body}}</td>
+                        <td>{{answer.answer_title}}</td>
+                        <td>{{answer.answer_body}}</td>
                         <td>{{answer.ip_address}}</td>
                         <td>{{answer.rep_reason}}</td>
-                    </tr>
+                        <td><form method='post' >{% csrf_token %}<button type='submit' name='del_answer' value='{{answer.id}}'>Delete answer</button></form></td>
+                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModall{{answer.id}}">
+                                Ban user
+                              </button>
+                            </td>
+                                           </tr>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModall{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Ban user</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <form method='post'>{%csrf_token%}
+                                       <p>Reason: <input class="u-full-width" type="text" name="b_reason" style='border-radius:0px'/></p>
+                                        <p>Date when ban expires: <input type="text" class="datepicker" name='b_length'></p>
+                                  
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary" name='ban_ip' value='{{answer.id}}'>Ban</button>
+                                </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                     {%endfor%}
+                    
+                    {%for ban in banned%}
+                    <tr>
+                            <th>Banned ips</th>
+                            <th>Unban</th>
+                        </tr>
+                        
+                    <tr>
+                        <td>{{ban.ip_ad}}</td>
+                        <td><form method='post'  >{% csrf_token %} <button type='submit' name='unban' value='{{ban.id}}' >Unban</form></td>
+                    </tr>
+                    
+                {%endfor%}
+               
                 </table>
 
 

@@ -17,7 +17,10 @@
             <div class='container'>
                 <div class='thread_title'><h3>{{thread.thread_title}}</h3></div>
                 <div class='thread_mail'>{{thread.op_mail}}</div>
+                {%if thread.image%}
+
                 <div class='thread_img'><img src='{{thread.image.url}}'width='240' /></div>
+                {%endif%}
                 <div clas='thread_body'>{{thread.thread_body}}</div>
             </div>
         
@@ -26,7 +29,10 @@
                 <div class='container'>
                 <div class='answer_title'>{{answer.answer_title}}</div>
                 <div class='answer_mail'>{{answer.answer_mail}}</div>
+                {%if answer.image%}
+
                     <div class='answer_img'><img src='{{answer.image.url}}'width='240'/></div>
+                    {%endif%}
                 <div class='answer_body'>{{answer.answer_body}}</div>
                 </div>
            {%endfor%}

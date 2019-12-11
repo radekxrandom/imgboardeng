@@ -3,6 +3,7 @@
 {% load static %}
 <html>
         <head>
+    
        
         </head>
         <body>
@@ -15,32 +16,58 @@
             <button class='btn btn-primary' type='submit' value='post_thread' name='post_thread'>Submit</button>
             </form>
             </div>
+            {%load thumbnail%}
+
             {%for thread in q2 %}
             <div class='container'>
-            <div class='thread_title'><h3>{{thread.thread_title}}</h3></div>
+            <div class='thread_title'><h3>{{thread.thread_title}} post number: {{thread.count}}</h3></div>
             <div class='thread_mail'>{{thread.op_mail}}</div>
             {%if thread.image%}
-            <div class='thread_img'><img src='{{thread.image.url}}'width='240' /></div>
+            {%thumbnail thread.image "240" as im %}
+            <div class='thread_img'><a href='{{thread.image.url}}'><img src='{{im.url}}'/></a></div>
+            {%endthumbnail%}
             {%endif%}
             <div clas='thread_body'>{{thread.thread_body}}</div>
-            <form method='post'>
-            {% csrf_token %}
-            <input type='checkbox' name='report_thread' value='{{thread.id}}'>
-            <button type='submit' value='{{thread.id}}'  name='report_thread'>Submit thread report</button>
-            {% if user.is_authenticated %}
-            <button type='submit'  value='{{thread.id}}' name='delete_thread'>Delete thread</button>
-            {%endif%}
-        </form>
+            <button  type='button' data-toggle="modal" data-target='banResModal{{thread.id}}'>Submit thread report</button>
+         
             <a href='{% url "obiadekchan:thread" thread.id %}'>Show more</a>
             </div>
+
+            
+<!-- Modal -->
+<div class="modal fade" id="banResModal{{thread.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Reason</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method='post'>{%csrf_token%}
+                   <p>Reason: <input class="u-full-width" type="text" name="r_reason" style='border-radius:0px'/></p>
+                    <button type="submit" class="btn btn-primary" name='report_thread' value='{{thread.id}}'>Report</button>
+                </form>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            
+            </div>
+          </div>
+        </div>
+      </div>
             
             {%for answer in thread.thread_ans.all %}
             <div class='container'>
                 <p>testtest</p>
-                <div class='answer_title'>{{answer.answer_title}}</div>
+                <div class='answer_title'>{{answer.answer_title}} post number: {{answer.count}}</div>
                 <div class='answer_mail'>{{answer.answer_mail}}</div>
                 {%if answer.image%}
-                    <div class='answer_img'><img src='{{answer.image.url}}'width='240'/></div>
+                {%thumbnail answer.image "240" as ima %}
+                <div class='answer_img'><a href='{{answer.image.url}}'><img src='{{ima.url}}'/></a></div>
+                {%endthumbnail%}
                 {%endif%}
                 <div class='answer_body'>{{answer.answer_body}}</div>
                 <form method='post'>
@@ -52,11 +79,32 @@
                         <button type='submit' value='{{answer.id}}' name='report_answer'>Submit answer report</button>
                     </form>
                 </div>
+                <br>
            
             {%endfor%}
 
         {%endfor%}
-  
+        
+        <div class='container'>
+        <div class="pagination">
+                <span class="step-links">
+                    {% if q2.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ q2.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    <span class="current">
+                        Page {{ q2.number }} of {{ q2.paginator.num_pages }}.
+                    </span>
+            
+                    {% if q2.has_next %}
+                        <a href="?page={{ q2.next_page_number }}">next</a>
+                        <a href="?page={{ q2.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
 {%endblock%}
         </body>
         </html>
