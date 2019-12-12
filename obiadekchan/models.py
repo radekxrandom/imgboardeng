@@ -4,7 +4,8 @@ from django.db import models
 
 
 
-    
+
+
 class Thread(models.Model):
     thread_pos = models.IntegerField(default=1)
     pub_date = models.DateTimeField(auto_now_add=True)
@@ -28,7 +29,7 @@ class Answer(models.Model):
     ip_address = models.GenericIPAddressField(protocol='IPv4')
     image = models.ImageField(upload_to='chanImgs/', blank=True, null=True)
     Thread = models.ForeignKey(Thread, on_delete=models.CASCADE,blank=True,
-    related_name='thread_ans')
+                               related_name='thread_ans')
     rep = models.BooleanField(blank=True, default=True)
     rep_reason = models.CharField(null=True, blank=True, max_length=20)
     banned = models.BooleanField(blank=True, default=True)
@@ -45,4 +46,3 @@ class Banned(models.Model):
 class Misc(models.Model):
     thread_count = models.IntegerField()
     post_count = models.IntegerField()
-

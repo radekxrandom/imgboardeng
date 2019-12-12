@@ -21,6 +21,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView
 import datetime
 from django.utils import timezone
 from django.core.paginator import Paginator
+from .utils import checkBan, bumpThread, incrementPostCount
 
 
 
@@ -30,7 +31,7 @@ banned_ips = []
 
 
 
-class IndexView(TemplateView):
+class IndexView(View):
     template_name = 'obiadekchan/index.html'
     def get(self, request, *args, **kwargs):
         q2 = Thread.objects.all().prefetch_related('thread_ans').order_by('-thread_pos')
@@ -39,47 +40,32 @@ class IndexView(TemplateView):
         q3 = paginator.get_page(page)
         context = {'q2': q3, 'form': addThreadForm()}
         return render(request, 'obiadekchan/index.html', context)
+
     def post(self, request, *args, **kwargs):
         form = addThreadForm(request.POST, request.FILES)
         if request.method == 'POST':
             if 'post_thread' in request.POST:
                 t_c_object = Misc.objects.first()
-                if t_c_object == None:
-                    t_c_object = Misc.objects.create(thread_count=1,post_count=1)
+                if t_c_object is None:
+                    t_c_object = Misc.objects.create(thread_count=0,post_count=0)
                 if form.is_valid():
-                    from django.db.models import Max
+                    from django.db.models import Max, Min
                     from ipware import get_client_ip
                     result = Thread.objects.all().aggregate(Max('thread_pos'))
-                    my_list = []
-                    for key,value in result.items():
-                        my_list.append(value)
-                    max_pos = my_list[0]
-                    if max_pos is not None:
-                        position = max_pos + 1
-                    else:
-                        position = 1
                     xpkej = form.save(commit=False)
-                    xpkej.thread_pos = position
+                    xpkej.thread_pos = bumpThread(result)
                     ip_address = get_client_ip(request)
                     xpkej.ip_address = ip_address
-                    if Banned.objects.all().filter(ip_ad=ip_address):
-                        ban = Banned.objects.all().get(ip_ad=ip_address)
-                        ban_d = ban.length
-                        now = timezone.now()
-                        if ban_d > now:
-                            return HttpResponseRedirect(reverse('obiadekchan:banned'))
-                        else:
-                            ban.delete()
+                    if checkBan(ip_address):
+                        return HttpResponseRedirect(reverse('obiadekchan:banned'))
                     thread_count = t_c_object.thread_count
-                    post_count = t_c_object.post_count + 1
-                    xpkej.count = post_count
-                    t_c_object.thread_count = thread_count
-                    t_c_object.post_count = post_count
-                    if t_c_object.thread_count > 5:
-                        det = Thread.objects.last()
+                    xpkej.count = incrementPostCount(t_c_object)
+                    t_c_object.thread_count = thread_count + 1
+                    if t_c_object.thread_count > 25:
+                        det = Thread.objects.order_by('thread_pos').first()
                         det.delete()
                         t_c_object.thread_count = t_c_object.thread_count - 1
-                    t_c_object.save()    
+                    t_c_object.save()
                     xpkej.save()
                     return HttpResponseRedirect(reverse('obiadekchan:index'))
                 else:
@@ -91,19 +77,11 @@ class IndexView(TemplateView):
                 thread.rep_res = request.POST.get('r_reason')
                 thread.save()
                 return HttpResponseRedirect(reverse('obiadekchan:index'))
-            elif 'delete_thread' in request.POST:
-                thread = Thread.objects.get(pk=request.POST['delete_thread'])
-                thread.delete()
-                return HttpResponseRedirect(reverse('obiadekchan:index'))
             elif 'report_answer' in request.POST:
                 answer = Answer.objects.get(pk=request.POST['report_answer'])
                 answer.rep = False
                 answer.rep_res = request.POST.get('r_reason')
                 answer.save()
-                return HttpResponseRedirect(reverse('obiadekchan:index'))
-            elif 'delete_answer' in request.POST:
-                answer = Answer.objects.get(pk=request.POST['delete_answer'])
-                answer.delete()
                 return HttpResponseRedirect(reverse('obiadekchan:index'))
             
             
@@ -121,7 +99,6 @@ class ThreadPost(TemplateView):
 
     def get_object(self, *args, **kwargs):
         thread = get_object_or_404(Thread, pk=self.kwargs['pk'])
-
         return thread
 
     def post(self, request, *args, **kwargs):
@@ -134,30 +111,24 @@ class ThreadPost(TemplateView):
             from ipware import get_client_ip
             ip_address = get_client_ip(request)
             t_form.ip_address = ip_address
-            banan = Banned.objects.all().filter(ip_ad=ip_address)
-            if Banned.objects.all().filter(ip_ad=ip_address):
-                ban = Banned.objects.all().get(ip_ad=ip_address)
-                ban_d = ban.length
-                now = timezone.now()
-                if ban_d > now:
-                    return HttpResponseRedirect(reverse('obiadekchan:banned'))
-                else:
-                    ban.delete()
+            if checkBan(ip_address):
+                return HttpResponseRedirect(reverse('obiadekchan:banned'))
             result = Thread.objects.all().aggregate(Max('thread_pos'))
-            my_list = []
-            for key,value in result.items():
-                my_list.append(value)
-            max_pos = my_list[0]
-            position = max_pos + 1
-            thread.thread_pos = position
-            p_c_object = Misc.objects.first()
-            post_count = p_c_object.post_count + 1
-            t_form.count = post_count
-            p_c_object.post_count = post_count
-            p_c_object.save()
+            mail = request.POST.get('op_email')
+            if mail.lower() == 'sage':
+                pass
+            else:
+                thread.thread_pos = bumpThread(result)
+            t_c_object = Misc.objects.first()
+            t_form.count = incrementPostCount(t_c_object)
             thread.save()
             t_form.save()
-            return HttpResponseRedirect(reverse('obiadekchan:index'))
+            if mail.lower() == 'noko':
+                return HttpResponseRedirect(reverse('obiadekchan:index'))
+            return HttpResponseRedirect(self.request.path_info)
+
+
+
 
 class ThreadView(View):
 
@@ -183,6 +154,9 @@ class ModeratorView(View):
             if 'del_thread' in request.POST:
                 thread = Thread.objects.get(pk=request.POST['del_thread'])
                 thread.delete()
+                t_c_object = Misc.objects.first()
+                t_c_object.thread_count = t_c_object.thread_count - 1
+                t_c_object.save()
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
             elif 'ban_ip' in request.POST:
                 thread = Thread.objects.get(pk=request.POST['ban_ip'])
@@ -206,8 +180,18 @@ class ModeratorView(View):
                 ban = Banned.objects.get(pk=request.POST['unban'])
                 ban.delete()
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
-
-
+            elif 'del_thread_report' in request.POST:
+                thread = Thread.objects.get(pk=request.POST['del_thread_report'])
+                thread.rep = True
+                thread.rep_reason = None
+                thread.save()
+                return HttpResponseRedirect(reverse('obiadekchan:mode'))
+            elif 'del_answer_report' in request.POST:
+                answer = Answer.objects.get(pk=request.POST['del_answer_report'])
+                answer.rep = True
+                answer.rep_reason = None
+                answer.save()
+                return HttpResponseRedirect(reverse('obiadekchan:mode'))
 
 
 def logout(request):

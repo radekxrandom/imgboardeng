@@ -25,7 +25,7 @@
             {%endblock%}
             <style>
             
-            
+
                     body {margin:0;}
                     
                     ul {
@@ -71,8 +71,8 @@
                       </ul>
                       <br><br><br>
                       <div class='container'>
-                        <center>
-                          {% with "baner.png,baner1.gif,baner2.gif,baner3.jpg"|split:","|random as image %}
+                        <center> 
+                          {% with "baner.png,baner1.gif,baner2.gif,baner3.jpg,baner4.png"|split:","|random as image %}
                        <img src='{%static image %}' />
                         <h2>/b/ - random</h2>
                         {% endwith %}

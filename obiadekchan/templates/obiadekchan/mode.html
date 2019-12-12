@@ -64,19 +64,20 @@
                         <th>Report reason</th>
                         <th>Delete</th>
                         <th>Ban</th>
+                        <th>Remove report</th>
                     </tr>
                     {%for thread in threads%}
                     <tr>
                         <td>{{thread.thread_title}}</td>
                         <td>{{thread.thread_body}}</td>
                         <td>{{thread.ip_address}}</td>
-                        <td>{{thread.rep_reason}}</td>
+                        <td>{{thread.rep_res}}</td>
                         <td><form method='post' >{% csrf_token %}<button type='submit' name='del_thread' value='{{thread.id}}'>Delete thread</button></form></td>
                         <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{thread.id}}">
                                 Ban user
                               </button>
                             </td>
-                       
+                        <td><form method='post'>{% csrf_token %} <button type='submit' name='del_thread_report' value='{{thread.id}}'>Delete report</button> </form></td>
             
                     </tr>
                     <!-- Modal -->
@@ -115,18 +116,22 @@
                         <th>Report reason</th>
                         <th>Delete</th>
                         <th>Ban</th>
+                        <th>Delete report</th>
                     </tr>
                     {%for answer in answers%}
                     <tr>
                         <td>{{answer.answer_title}}</td>
                         <td>{{answer.answer_body}}</td>
                         <td>{{answer.ip_address}}</td>
-                        <td>{{answer.rep_reason}}</td>
+                        <td>{{answer.rep_res}}</td>
                         <td><form method='post' >{% csrf_token %}<button type='submit' name='del_answer' value='{{answer.id}}'>Delete answer</button></form></td>
                         <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModall{{answer.id}}">
                                 Ban user
                               </button>
                             </td>
+                            <td><form method='post'>{% csrf_token %} <button type='submit' name='del_answer_report' value='{{answer.id}}'>
+                                Delete report</button> </form></td>
+
                                            </tr>
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModall{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -146,7 +151,7 @@
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                  <button type="submit" class="btn btn-primary" name='ban_ip' value='{{answer.id}}'>Ban</button>
+                                  <button type="submit" class="btn btn-primary" name='ban_ans_ip' value='{{answer.id}}'>Ban</button>
                                 </form>
                                 </div>
                               </div>
@@ -157,11 +162,13 @@
                     {%for ban in banned%}
                     <tr>
                             <th>Banned ips</th>
+                            <th>Ban reason</th>
                             <th>Unban</th>
                         </tr>
                         
                     <tr>
                         <td>{{ban.ip_ad}}</td>
+                        <td>{{ban.reason}}</td>
                         <td><form method='post'  >{% csrf_token %} <button type='submit' name='unban' value='{{ban.id}}' >Unban</form></td>
                     </tr>
                     

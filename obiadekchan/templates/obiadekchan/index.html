@@ -3,39 +3,49 @@
 {% load static %}
 <html>
         <head>
-    
-       
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+              
+                
         </head>
         <body>
             {%block body%}
             <br>
-        <div class='container'>
+        
+            
+            <center>  <div class='container'>
+
             <form method='post' enctype="multipart/form-data">
-            {% csrf_token %}
-            {{form}}
-            <button class='btn btn-primary' type='submit' value='post_thread' name='post_thread'>Submit</button>
-            </form>
+                {% csrf_token %}
+               <p>Email: {{form.op_email}}</p> <p>Title: {{form.thread_title}}</p><p id='thread_text'>{{form.thread_body}}</p><p>{{form.image}}</p>
+                    <button class='btn btn-primary' type='submit' value='post_thread' name='post_thread'>Submit</button>
+                </form>
+            </center>
+            
             </div>
             {%load thumbnail%}
 
             {%for thread in q2 %}
             <div class='container'>
-            <div class='thread_title'><h3>{{thread.thread_title}} post number: {{thread.count}}</h3></div>
+            <div class='thread_title'><h3>{%if thread.thread_title %} {{thread.thread_title}}  {% endif %} 
+                {{thread.date}}</h3></div>
+                <div class='post_number'> post number: {{thread.count}} </div>
             <div class='thread_mail'>{{thread.op_mail}}</div>
             {%if thread.image%}
             {%thumbnail thread.image "240" as im %}
-            <div class='thread_img'><a href='{{thread.image.url}}'><img src='{{im.url}}'/></a></div>
+            <div class='thread_img'><a href='{{thread.image.url}}' target="_blank"><img src='{{im.url}}'/></a></div>
             {%endthumbnail%}
             {%endif%}
             <div clas='thread_body'>{{thread.thread_body}}</div>
-            <button  type='button' data-toggle="modal" data-target='banResModal{{thread.id}}'>Submit thread report</button>
+            <button  type='button'  data-toggle="modal" data-target='#t_banResModal{{thread.id}}'>
+                Submit thread report</button>
          
             <a href='{% url "obiadekchan:thread" thread.id %}'>Show more</a>
             </div>
 
             
 <!-- Modal -->
-<div class="modal fade" id="banResModal{{thread.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="t_banResModal{{thread.id}}" tabindex="-1" role="dialog" 
+aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -46,8 +56,10 @@
             </div>
             <div class="modal-body">
               <form method='post'>{%csrf_token%}
-                   <p>Reason: <input class="u-full-width" type="text" name="r_reason" style='border-radius:0px'/></p>
-                    <button type="submit" class="btn btn-primary" name='report_thread' value='{{thread.id}}'>Report</button>
+                   <p>Reason: <input class="u-full-width" type="text" name="r_reason" 
+                    style='border-radius:0px'/></p>
+                    <button type="submit" class="btn btn-primary" name='report_thread' 
+                    value='{{thread.id}}'>Report</button>
                 </form>
               
             </div>
@@ -61,26 +73,48 @@
             
             {%for answer in thread.thread_ans.all %}
             <div class='container'>
-                <p>testtest</p>
-                <div class='answer_title'>{{answer.answer_title}} post number: {{answer.count}}</div>
+                <div class='answer_title'>{%if answer.answer_title %} {{answer.answer_title}}{%endif%} 
+                    {{answer.date}}</div> <div class='post_number'> post number: {{answer.count}} </div>
                 <div class='answer_mail'>{{answer.answer_mail}}</div>
                 {%if answer.image%}
                 {%thumbnail answer.image "240" as ima %}
-                <div class='answer_img'><a href='{{answer.image.url}}'><img src='{{ima.url}}'/></a></div>
+                <div class='answer_img'><a href='{{answer.image.url}}' target="_blank"><img src='{{ima.url}}'/></a></div>
                 {%endthumbnail%}
                 {%endif%}
                 <div class='answer_body'>{{answer.answer_body}}</div>
-                <form method='post'>
-                        {% csrf_token %}
-                        <input type='checkbox' name='report_answer' value='{{answer.id}}'>
-                        {% if user.is_authenticated %}
-                        <button type='submit' value='{{answer.id}}' name='delete_answer'>Delete answer</button>
-                            {%endif%}
-                        <button type='submit' value='{{answer.id}}' name='report_answer'>Submit answer report</button>
-                    </form>
+               
+                <button  type='button'data-toggle="modal" data-target='#a_banResModal{{answer.id}}'>
+                    Konfituro dęta</button>
+                  
                 </div>
                 <br>
-           
+                <div class="modal fade" id="a_banResModal{{answer.id}}" tabindex="-1" role="dialog" 
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Reason</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <form method='post'>{%csrf_token%}
+                                   <p>Reason: <input class="u-full-width" type="text" name="r_reason" 
+                                    style='border-radius:0px'/></p>
+                                    <button type="submit" class="btn btn-primary" name='report_answer' 
+                                    value='{{answer.id}}'>Report</button>
+                                </form>
+                              
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                  Close</button>
+                            
+                            </div>
+                          </div>
+                        </div>
+                      </div>
             {%endfor%}
 
         {%endfor%}
@@ -104,7 +138,24 @@
                 </span>
             </div>
         </div>
+        <script> $(function () { $('div.post_number').click(function() {
+            var data = $(this).map(function () {
+            return $(this).text();
+        }).get();
+                $('textarea').each(function (i) {
+                    var newValue = data[i];
+                    var curValue = $(this).val();
+                    newValue = newValue.slice(14);
+                    var toAppend = curValue + '>>'+ newValue;
+                    $(this).val(toAppend);
 
+                });
+        
+            });
+});</script>
+      
 {%endblock%}
+
+
         </body>
         </html>

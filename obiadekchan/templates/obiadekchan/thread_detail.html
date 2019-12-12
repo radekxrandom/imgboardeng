@@ -7,15 +7,22 @@
         </head>
         <body>
 {%block body%}
-        <div class='container'>
-            <form method='post' enctype="multipart/form-data">
-            {% csrf_token %}
-            {{form}}
-            <button class='btn btn-primary' type='submit'>Submit</button>
-            </form>
-            </div>
+            <center>
             <div class='container'>
-                <div class='thread_title'><h3>{{thread.thread_title}}</h3></div>
+
+            <form method='post' enctype="multipart/form-data">
+                {% csrf_token %}
+               <p>Email: {{form.op_email}}</p> <p>Title: {{form.answer_title}}</p><p id='thread_text'>{{form.answer_body}}</p><p>{{form.image}}</p>
+                    <button class='btn btn-primary' type='submit'>Submit</button>
+                </form>
+            </div></center>
+
+
+            {%load thumbnail%}
+            <div class='container'>
+                    <div class='thread_title'><h3>{%if thread.thread_title %} {{thread.thread_title}}  {% endif %} 
+                            {{thread.date}}</h3></div>
+                            <div class='post_number'> post number: {{thread.count}} </div>
                 <div class='thread_mail'>{{thread.op_mail}}</div>
                 {%if thread.image%}
 
@@ -27,16 +34,34 @@
             
                 {%for answer in thread.thread_ans.all %}
                 <div class='container'>
-                <div class='answer_title'>{{answer.answer_title}}</div>
+                        <div class='answer_title'>{%if answer.answer_title %} {{answer.answer_title}}{%endif%} 
+                                {{answer.date}}</div> <div class='post_number'> post number: {{answer.count}} </div>
                 <div class='answer_mail'>{{answer.answer_mail}}</div>
                 {%if answer.image%}
-
-                    <div class='answer_img'><img src='{{answer.image.url}}'width='240'/></div>
-                    {%endif%}
+                {%thumbnail answer.image "240" as ima %}
+                <div class='answer_img'><a href='{{answer.image.url}}'><img src='{{ima.url}}'/></a></div>
+                {%endthumbnail%}
+                {%endif%}
                 <div class='answer_body'>{{answer.answer_body}}</div>
                 </div>
            {%endfor%}
 
+           <script> $(function () { $('div.post_number').click(function() {
+                var data = $(this).map(function () {
+                return $(this).text();
+            }).get();
+                    $('textarea').each(function (i) {
+                        var newValue = data[i];
+                        var curValue = $(this).val();
+                        newValue = newValue.slice(14);
+                        var toAppend = curValue + '>>'+ newValue;
+                        $(this).val(toAppend);
+    
+                    });
+            
+                });
+    });</script>
             {%endblock%}
+
         </body>
         </html>
