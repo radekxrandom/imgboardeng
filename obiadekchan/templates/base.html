@@ -8,8 +8,7 @@
                 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
                 <meta name="description" content="">
                 <meta name="author" content="">
-                <link rel="icon" href="../../favicon.ico">
-                <link rel="canonical" href="https://getbootstrap.com/docs/3.4/examples/navbar-fixed-top/">
+                <link rel="icon" href="https://i.imgur.com/Tv3Uxj9.png">
             <link rel="stylesheet" href="{% static 'css/styles.css' %}">
              <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -22,11 +21,15 @@
              <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
             {%block head%}
             <title>Obiadekchan</title>
+            <!-- kolorki na zapas #C4D5DD #CFCFCF #DADADA ->#C4D5DD #BBCAD1 #BBC6D1  #9FB6C1 #9FB6C1-->
             {%endblock%}
             <style>
+              
             
 
-                    body {margin:0;}
+                    body {margin:0;
+                      backgrounda-color:#DADADA;
+                    }
                     
                     ul {
                       list-style-type: none;
@@ -63,7 +66,7 @@
 
         </head>
         <body>
-                <ul class='nav'>
+                <ul class='nav' style='z-index:1;'>
                         <li><a href="{% url 'obiadekchan:index' %} ">/b/</a></li>
                         <li><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#settingsModal">
                             Settings
@@ -140,8 +143,50 @@
         evt.currentTarget.className += " w3-cyan";
       }
       </script>
+         <script> $(function () { $('span.post_number').click(function() {
+            var data = $(this).map(function () {
+            return $(this).text();
+        }).get();
+                $('textarea').each(function (i) {
+                    var newValue = data[i];
+                    var curValue = $(this).val();
+                    newValue = newValue.slice(14);
+                    var toAppend = curValue + '>>'+ newValue;
+                    $(this).val(toAppend);
 
-      
+                });
+        
+            });
+});</script>
+ 
+<script>
+    var pre = document.getElementsByTagName("pre");
+
+for(let ele of pre){
+let el = ele.innerHTML;
+let lines = el.split("\n");
+for(let line in lines){
+   if(lines[line].search("&gt;&gt;") > -1){
+       let words = lines[line].split(" ");
+       for(let word in words){
+           if(words[word].search("&gt;&gt;") === 0){
+               let w = words[word].split("&gt;&gt;")[1]
+               let toReplace = `&gt;&gt;${w}`;
+               let replacement = `<a data-id="${w}" href="/obiadekchan/${w}">>>${w}</a>`;
+               words[word] = words[word].replace(toReplace, replacement);
+           }
+       }
+       lines[line] = words.join(" ");
+   }else if(lines[line].search("&gt") === 0){
+       lines[line] = `<span style="color: #789922;">${lines[line]}</span>`;
+   }
+}
+el = lines.join("\n")
+ele.innerHTML = el;
+}  
+ </script>
+ 
+     
 
             </body>
             </html>

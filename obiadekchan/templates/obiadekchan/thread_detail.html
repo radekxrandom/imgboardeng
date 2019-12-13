@@ -28,7 +28,7 @@
 
                 <div class='thread_img'><img src='{{thread.image.url}}'width='240' /></div>
                 {%endif%}
-                <div clas='thread_body'>{{thread.thread_body}}</div>
+                <div clas='thread_body'><pre>{{thread.thread_body}}</pre></div>
             </div>
         
             
@@ -42,25 +42,10 @@
                 <div class='answer_img'><a href='{{answer.image.url}}'><img src='{{ima.url}}'/></a></div>
                 {%endthumbnail%}
                 {%endif%}
-                <div class='answer_body'>{{answer.answer_body}}</div>
+                <div class='answer_body'><pre>{{answer.answer_body}}</pre></div>
                 </div>
            {%endfor%}
 
-           <script> $(function () { $('div.post_number').click(function() {
-                var data = $(this).map(function () {
-                return $(this).text();
-            }).get();
-                    $('textarea').each(function (i) {
-                        var newValue = data[i];
-                        var curValue = $(this).val();
-                        newValue = newValue.slice(14);
-                        var toAppend = curValue + '>>'+ newValue;
-                        $(this).val(toAppend);
-    
-                    });
-            
-                });
-    });</script>
             {%endblock%}
 
         </body>

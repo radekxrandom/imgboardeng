@@ -42,6 +42,7 @@ class Banned(models.Model):
     ip_ad = models.CharField(null=True, max_length=20)
     length = models.DateTimeField()
     reason = models.CharField(null=True,max_length=100)
+    post_content = models.TextField(null=True,blank=True)
 
 class Misc(models.Model):
     thread_count = models.IntegerField()

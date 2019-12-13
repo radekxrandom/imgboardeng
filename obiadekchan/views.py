@@ -17,11 +17,13 @@ from .forms import addThreadForm, addAnswerForm
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import FormView
 from django.contrib.auth.decorators import login_required
-from bootstrap_modal_forms.generic import BSModalCreateView
 import datetime
 from django.utils import timezone
 from django.core.paginator import Paginator
 from .utils import checkBan, bumpThread, incrementPostCount
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+
 
 
 
@@ -142,12 +144,17 @@ class ThreadView(View):
 
 
 class ModeratorView(View):
+
+    #login_url = 'obiadekchan/login'
+    #redirect_field_name = 'redirect_to'
+    @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         template_name = 'obiadekchan/mode.html'
         context = {'threads': Thread.objects.all().filter(rep=False),
                    'answers':Answer.objects.all().filter(rep=False), 'banned': Banned.objects.all()}
         return render(request, template_name, context)
-    
+
+    @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             from ipware import get_client_ip
@@ -163,7 +170,8 @@ class ModeratorView(View):
                 ip_address = thread.ip_address
                 b_reason = request.POST.get('b_reason')
                 b_length = request.POST.get('b_length')
-                ban = Banned.objects.create(ip_ad=ip_address, reason=b_reason, length=b_length)
+                content = thread.thread_body
+                ban = Banned.objects.create(ip_ad=ip_address, reason=b_reason, length=b_length, post_content=content)
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
             elif 'del_answer' in request.POST:
                 answer = Answer.objects.get(pk=request.POST['del_answer'])
@@ -174,7 +182,8 @@ class ModeratorView(View):
                 ip_address = answer.ip_address
                 b_reason = request.POST.get('b_reason')
                 b_length = request.POST.get('b_length')
-                ban = Banned.objects.create(ip_ad=ip_address, reason=b_reason, length=b_length)
+                content = answer.answer_body
+                ban = Banned.objects.create(ip_ad=ip_address, reason=b_reason, length=b_length, post_content=content)
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
             elif 'unban' in request.POST:
                 ban = Banned.objects.get(pk=request.POST['unban'])

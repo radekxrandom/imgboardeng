@@ -69,7 +69,7 @@
                     {%for thread in threads%}
                     <tr>
                         <td>{{thread.thread_title}}</td>
-                        <td>{{thread.thread_body}}</td>
+                        <td>{{thread.thread_body|linebreaks}}</td>
                         <td>{{thread.ip_address}}</td>
                         <td>{{thread.rep_res}}</td>
                         <td><form method='post' >{% csrf_token %}<button type='submit' name='del_thread' value='{{thread.id}}'>Delete thread</button></form></td>
@@ -107,6 +107,7 @@
       </div>
                     {%endfor%}
                 </table>
+                <br>
                 <h2>Reported posts</h2>
                 <table>
                     <tr>
@@ -121,7 +122,7 @@
                     {%for answer in answers%}
                     <tr>
                         <td>{{answer.answer_title}}</td>
-                        <td>{{answer.answer_body}}</td>
+                        <td>{{answer.answer_body|linebreaks}}</td>
                         <td>{{answer.ip_address}}</td>
                         <td>{{answer.rep_res}}</td>
                         <td><form method='post' >{% csrf_token %}<button type='submit' name='del_answer' value='{{answer.id}}'>Delete answer</button></form></td>
@@ -158,19 +159,25 @@
                             </div>
                           </div>
                     {%endfor%}
-                    
-                    {%for ban in banned%}
+                        </table>
+                        <br>
+                   
+                    <h2>Banned users</h2>
+                    <table>
                     <tr>
                             <th>Banned ips</th>
                             <th>Ban reason</th>
+                            <th>Banned post</th>
                             <th>Unban</th>
                         </tr>
-                        
+                        {%for ban in banned%}
                     <tr>
                         <td>{{ban.ip_ad}}</td>
                         <td>{{ban.reason}}</td>
+                        <td>{{ban.post_content|linebreaks}}</td>
                         <td><form method='post'  >{% csrf_token %} <button type='submit' name='unban' value='{{ban.id}}' >Unban</form></td>
                     </tr>
+                </table>
                     
                 {%endfor%}
                
