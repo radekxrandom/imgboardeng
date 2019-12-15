@@ -5,6 +5,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <style>
+
     .hidden{
       display: none;
     }
@@ -29,20 +30,28 @@
     </center>
 
     </div>
-    {%load thumbnail%} {%for thread in q2 %}
-    <div class='container' style='margin-left: 30px;
-            margin-right: 30px;
-            clear: both;
-            overflow: hidden;'>
+    {%load thumbnail%}
+    
+    <form method=post>
+    {%for thread in q2 %}
+    <div class='thread'style='margin-left: 30px;
+    margin-right: 30px;
+    clear: both; margain-top: 150;
+    overflow: hidden;'>
+    <div class='constainer' style='margin-left: 30px;
+            maragin-right: 30px;
+            clear: both;margin-right: 550;
+    margin-bottom: 30;
+            '><div class='post' style='display:block;'>
         <div class='thread_title' style='    padding: 5px;
-            background-color: rgba(237,207,142,.7);
-            max-width: 99%;    display: block;
-    position: relative;
-'>{%if thread.thread_title %} <span class='title'>{{thread.thread_title}}</span> {% endif %} {%if thread.email%}
+            background-color: #ACD7DE; margin-bottom:10px;
+            width: 10000;    display: block;
+    position: relative; maargin-top:10a0;
+'><input type='radio' name='rep_choice' value='{{thread.id}}'></input>{%if thread.thread_title %} <span class='title'>{{thread.thread_title}}</span> {% endif %} {%if thread.email%}
             <a href='mailto:{{thread.email}}'>Anonymouos</a> {%else%}
             <span class='name'> Anonymous</span> {%endif%}
             <span class='date'> {{thread.date}} </span>
-            <span class='post_number'> post number: <a href='#'>{{thread.count}}</a> </span></div>
+            <span class='post_number'> post number: <a href='#'>{{thread.count}}</a> </span><span>  <a href='{% url "obiadekchan:thread" thread.id %}'>[Reply]</a></span></div>
 
         {%if thread.image%} {%thumbnail thread.image "240" as im %}
         <a href='{{thread.image.url}}' target="_blank" style='    float: left;
@@ -50,22 +59,66 @@
            margin-right: 20px;
            margin-top: 3px;
            margin-bottom: 0;
-           position: relative; display: block;
+           position: relative; display: block; margin-bottom: 20;
        '><img src='{{im.url}}' /></a>
         {%endthumbnail%} {%endif%}
-        <pre style='display: block;
+        <pre style='display: block;    white-space: pre-wrap;  
            margin-block-start: 1em;
            margin-block-end: 1em;
            margin-inline-start: 40px;
            margin-inline-end: 40px;overflow-wrap: break-word; font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important; '>{{thread.thread_body}}</pre>
-            <button type='button' data-toggle="modal" data-target='#t_banResModal{{thread.id}}'>
-                Submit thread report</button>
+            
+        </div>
+        <a href='{% url "obiadekchan:thread" thread.id %}'>Show more</a>
 
-            <a href='{% url "obiadekchan:thread" thread.id %}'>Show more</a>
     </div>
+   
+
+
+
+    {%for answer in thread.thread_ans.all %}
+    <div class='constainer' style='    display: block; boarder:solid; border-radius: 5px; baorder-color: darkgoldenrod; background: #ACD7DE;
+            max-width: 100ch;margin-right: 550;
+    margin-left: 360;'><div classs='post' style='padding: 5px;
+    display: inline-block;
+    margin-right: 10px;
+    margin-left: 22px;'>
+        <div class='answer_title'>{%if answer.answer_title %} <span class='title'>{{answer.answer_title}}</span> {% endif %}<input type='radio' name='a_rep_choice' value='{{answer.id}}'></input> {%if answer.email%}
+            <a href='mailto:{{answer.email}}'>Anonymous</a> {%else%}
+            <span class='name'> Anonymous</span> {%endif%}
+            <span class='date'> {{answer.date}} </span>
+            <span class='post_number'> post number: <a href='#'>{{answer.count}}</a> </span></div>
+        {%if answer.image%} {%thumbnail answer.image "240" as ima %}
+        <div class='answer_img'>
+            <a href='{{answer.image.url}}' target="_blank" style='    float: left;
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 3px;
+            margin-bottom: 0;
+            position: relative; display: block;
+        '><img src='{{ima.url}}' /></a>
+        </div>
+        {%endthumbnail%} {%endif%}
+        <div class='p_body'><pre style='margin-block-start: 1em;
+                    margin-block-end: 1em;     white-space: pre-wrap;  
+                    margin-inline-start: 40px;
+                    margin-inline-end: 40px; overflow-wrap: break-word;font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important;
+                    '>{{answer.answer_body}}</pre></div>
+
+   
+
+    </div>
+</div>
+
+    <br>
+  
+    {%endfor%} </div> <br>{%endfor%}
+<br><br>
+    <button type='button' style='float:right;    margin-top: 100;' data-toggle="modal" data-target='#t_banResModal'>
+        Submit thread report</button>
 
     <!-- Modal -->
-    <div class="modal fade" id="t_banResModal{{thread.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="t_banResModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -75,12 +128,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method='post'>{%csrf_token%}
+                    {%csrf_token%}
                         <p>Reason:
                             <input class="u-full-width" type="text" name="r_reason" style='border-radius:0px' />
                         </p>
-                        <button type="submit" class="btn btn-primary" name='report_thread' value='{{thread.id}}'>Report</button>
-                    </form>
+                        <button type="submit" class="btn btn-primary" name='report_thread' >Report</button>
+                    
 
                 </div>
                 <div class="modal-footer">
@@ -91,60 +144,10 @@
         </div>
     </div>
 
-    {%for answer in thread.thread_ans.all %}
-    <div class='container' style='    display: block;
-            max-width: 100ch;'>
-        <div class='answer_title'>{%if answer.answer_title %} <span class='title'>{{answer.answer_title}}</span> {% endif %} {%if answer.email%}
-            <a href='mailto:{{answer.email}}'>Anonymous</a> {%else%}
-            <span class='name'> Anonymous</span> {%endif%}
-            <span class='date'> {{answer.date}} </span>
-            <span class='post_number'> post number: <a href='#'>{{answer.count}}</a> </span></div>
-        {%if answer.image%} {%thumbnail answer.image "240" as ima %}
-        <div class='answer_img'>
-            <a href='{{answer.image.url}}' target="_blank"><img src='{{ima.url}}' /></a>
-        </div>
-        {%endthumbnail%} {%endif%}
-        <div class='p_body'><pre style='margin-block-start: 1em;
-                    margin-block-end: 1em;
-                    margin-inline-start: 40px;
-                    margin-inline-end: 40px; overflow-wrap: break-word;font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important;
-                    '>{{answer.answer_body}}</pre></div>
 
-        <button type='button' data-toggle="modal" data-target='#a_banResModal{{answer.id}}'>
-            Konfituro dęta</button>
+</form>
 
-    </div>
-    <br>
-    <div class="modal fade" id="a_banResModal{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Reason</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method='post'>{%csrf_token%}
-                        <p>Reason:
-                            <input class="u-full-width" type="text" name="r_reason" style='border-radius:0px' />
-                        </p>
-                        <button type="submit" class="btn btn-primary" name='report_answer' value='{{answer.id}}'>Report</button>
-                    </form>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        Close</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    {%endfor%} {%endfor%}
-
-
-    <div class='container'>
+    <div class='container' style=' margin-top: 100;'>
         <div class="pagination">
             <span class="step-links">
                     {% if q2.has_previous %}

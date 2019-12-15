@@ -74,11 +74,18 @@ class IndexView(View):
                     q2 = Thread.objects.all().prefetch_related('thread_ans').order_by('-thread_pos')
                     return render(request, self.template_name, {'form':form, 'q2': q2})
             elif 'report_thread' in request.POST:
-                thread = Thread.objects.get(pk=request.POST['report_thread'])
-                thread.rep = False
-                thread.rep_res = request.POST.get('r_reason')
-                thread.save()
-                return HttpResponseRedirect(reverse('obiadekchan:index'))
+                if 'rep_choice' in request.POST:
+                    thread = Thread.objects.get(pk=request.POST['rep_choice'])
+                    thread.rep = False
+                    thread.rep_res = request.POST.get('r_reason')
+                    thread.save()
+                    return HttpResponseRedirect(reverse('obiadekchan:index'))
+                elif 'a_rep_choice' in request.POST:
+                    answer = Answer.objects.get(pk=request.POST['a_rep_choice'])
+                    answer.rep = False
+                    answer.rep_res = request.POST.get('r_reason')
+                    answer.save()
+                    return HttpResponseRedirect(reverse('obiadekchan:index'))  
             elif 'report_answer' in request.POST:
                 answer = Answer.objects.get(pk=request.POST['report_answer'])
                 answer.rep = False
