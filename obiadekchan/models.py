@@ -20,6 +20,7 @@ class Thread(models.Model):
     count = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True, blank=True)
     rep_res = models.CharField(null=True, blank=True, default='No reason provided', max_length=200)
+    password = models.CharField(max_length=20,null=True,blank=True)
 
 class Answer(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
@@ -36,6 +37,7 @@ class Answer(models.Model):
     count = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True, blank=True)
     rep_res = models.CharField(null=True, blank=True, default='No reason provided', max_length=200)
+    password = models.CharField(max_length=20,null=True,blank=True)
 
 
 class Banned(models.Model):

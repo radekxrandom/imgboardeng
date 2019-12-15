@@ -11,5 +11,6 @@ urlpatterns = [
     path('mode/', views.ModeratorView.as_view(), name='mode'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
-    path('banned/', views.banned, name='banned')
+    path('banned/', views.banned, name='banned'),
+    path('catalog/', views.CatalogView.as_view(), name='catalog')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

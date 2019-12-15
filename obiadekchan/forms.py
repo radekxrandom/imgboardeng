@@ -10,6 +10,7 @@ class addThreadForm(forms.ModelForm):
         fields = ['op_email','thread_title','thread_body','image']
 
 class addAnswerForm(forms.ModelForm):
+
     class Meta:
         model = Answer
         fields = ['op_email','answer_title','answer_body','image']

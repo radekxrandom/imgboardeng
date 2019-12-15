@@ -37,7 +37,7 @@ class IndexView(View):
     template_name = 'obiadekchan/index.html'
     def get(self, request, *args, **kwargs):
         q2 = Thread.objects.all().prefetch_related('thread_ans').order_by('-thread_pos')
-        paginator = Paginator(q2, 5)
+        paginator = Paginator(q2, 10)
         page = request.GET.get('page')
         q3 = paginator.get_page(page)
         context = {'q2': q3, 'form': addThreadForm()}
@@ -63,7 +63,7 @@ class IndexView(View):
                     thread_count = t_c_object.thread_count
                     xpkej.count = incrementPostCount(t_c_object)
                     t_c_object.thread_count = thread_count + 1
-                    if t_c_object.thread_count > 25:
+                    if t_c_object.thread_count > 50:
                         det = Thread.objects.order_by('thread_pos').first()
                         det.delete()
                         t_c_object.thread_count = t_c_object.thread_count - 1
@@ -118,7 +118,7 @@ class ThreadPost(TemplateView):
             result = Thread.objects.all().aggregate(Max('thread_pos'))
             mail = request.POST.get('op_email')
             if mail.lower() == 'sage':
-                pass
+                thread.thread_pos = thread.thread_pos
             else:
                 thread.thread_pos = bumpThread(result)
             t_c_object = Misc.objects.first()
@@ -126,7 +126,7 @@ class ThreadPost(TemplateView):
             thread.save()
             t_form.save()
             if mail.lower() == 'noko':
-                return HttpResponseRedirect(reverse('obiadekchan:index'))
+                return HttpResponseRedirect(reverse('obiadekchan:index'))            
             return HttpResponseRedirect(self.request.path_info)
 
 
@@ -201,6 +201,17 @@ class ModeratorView(View):
                 answer.rep_reason = None
                 answer.save()
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
+
+
+class CatalogView(View):
+
+    def get(self, request, *args, **kwargs):
+        threads = Thread.objects.all().order_by('-thread_pos')
+        context = {'threads': threads}
+        return render(request, 'obiadekchan/catalog.html', context) 
+
+
+
 
 
 def logout(request):
