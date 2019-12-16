@@ -47,7 +47,7 @@
             background-color: #ACD7DE; margin-bottom:10px;
             width: 10000;    display: block;
     position: relative; maargin-top:10a0;
-'><input type='radio' name='rep_choice' value='{{thread.id}}'></input>{%if thread.post_title %} <span class='title'>{{thread.post_title}}</span> {% endif %} {%if thread.email%}
+'><input type='checkbox' name='rep_choice' value='{{thread.id}}'>{%if thread.post_title %} <span class='title'>{{thread.post_title}}</span> {% endif %} {%if thread.email%}
             <a href='mailto:{{thread.email}}'>Anonymouos</a> {%else%}
             <span class='name'> Anonymous</span> {%endif%}
             <span class='date'> {{thread.date}} </span>
@@ -83,7 +83,7 @@
     display: inline-block;
     margin-right: 10px;
     margin-left: 22px;'>
-        <div class='answer_title'>{%if answer.post_title %} <span class='title'>{{answer.post_title}}</span> {% endif %}<input type='radio' name='a_rep_choice' value='{{answer.id}}'></input> {%if answer.email%}
+        <div class='answer_title'>{%if answer.post_title %} <span class='title'>{{answer.post_title}}</span> {% endif %}<input type='checkbox' name='rep_choice' value='{{answer.id}}'></input> {%if answer.email%}
             <a href='mailto:{{answer.email}}'>Anonymous</a> {%else%}
             <span class='name'> Anonymous</span> {%endif%}
             <span class='date'> {{answer.date}} </span>
@@ -132,7 +132,7 @@
                         <p>Reason:
                             <input class="u-full-width" type="text" name="r_reason" style='border-radius:0px' />
                         </p>
-                        <button type="submit" class="btn btn-primary" name='report_thread' >Report</button>
+                        <button type="submit" class="btn btn-primary" name='report_post' >Report</button>
                     
 
                 </div>

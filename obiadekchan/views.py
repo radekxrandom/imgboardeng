@@ -85,12 +85,14 @@ class IndexView(View):
                     q2 = self.q2
                     return render(request, self.template_name, {'form':form, 'q2': q2})
             elif 'report_post' in request.POST:
-                if 'rep_choice' in request.POST:
-                    post = Post.objects.get(pk=request.POST['rep_choice'])
+                rep_posts = request.POST.getlist('rep_choice')
+                #post = Post.objects.get(pk=request.POST['rep_choice'])
+                for i in rep_posts:
+                    post = Post.objects.get(pk=i)
                     post.rep = False
                     post.rep_res = request.POST.get('r_reason')
                     post.save()
-                    return HttpResponseRedirect(reverse('obiadekchan:index'))
+                return HttpResponseRedirect(reverse('obiadekchan:index'))
             
             
 class ThreadDetail(generic.DetailView):
@@ -106,6 +108,7 @@ class ThreadDetail(generic.DetailView):
 class ThreadPost(TemplateView):
     template_name = 'obiadekchan/thread.html'
     model = Post
+
 
     def get_object(self, *args, **kwargs):
         thread = get_object_or_404(Post, pk=self.kwargs['pk'])
@@ -138,8 +141,8 @@ class ThreadPost(TemplateView):
             thread.replies.add(t_form)
             thread.save()
             if mail.lower() == 'noko':
-                return HttpResponseRedirect(reverse('obiadekchan:index'))            
-            return HttpResponseRedirect(self.request.path_info)
+                return HttpResponseRedirect(reverse('obiadekchan:index')) 
+            return redirect('obiadekchan:thread',pk=self.kwargs['pk'])             
 
 
 
