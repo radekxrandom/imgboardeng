@@ -1,4 +1,4 @@
-from .models import Banned, Misc
+from .models import Banned, Misc, Post
 import datetime
 from django.utils import timezone
 

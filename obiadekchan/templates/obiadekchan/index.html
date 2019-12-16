@@ -22,8 +22,8 @@
             <form method='post' enctype="multipart/form-data" autocomplete="off">
                 {% csrf_token %}
                 <p>Email: {{form.op_email}}</p>
-                <p>Title: {{form.thread_title}}</p>
-                <p id='thread_text'> {{form.thread_body}}</p>
+                <p>Title: {{form.post_title}}</p>
+                <p id='thread_text'> {{form.post_body}}</p>
                 <p>{{form.image}}</p>
                 <button class='btn btn-primary' type='submit' value='post_thread' name='post_thread'>Submit</button>
             </form>
@@ -47,11 +47,11 @@
             background-color: #ACD7DE; margin-bottom:10px;
             width: 10000;    display: block;
     position: relative; maargin-top:10a0;
-'><input type='radio' name='rep_choice' value='{{thread.id}}'></input>{%if thread.thread_title %} <span class='title'>{{thread.thread_title}}</span> {% endif %} {%if thread.email%}
+'><input type='radio' name='rep_choice' value='{{thread.id}}'></input>{%if thread.post_title %} <span class='title'>{{thread.post_title}}</span> {% endif %} {%if thread.email%}
             <a href='mailto:{{thread.email}}'>Anonymouos</a> {%else%}
             <span class='name'> Anonymous</span> {%endif%}
             <span class='date'> {{thread.date}} </span>
-            <span class='post_number'> post number: <a href='#'>{{thread.count}}</a> </span><span>  <a href='{% url "obiadekchan:thread" thread.id %}'>[Reply]</a></span></div>
+            <span class='post_number'> post number: <a href='#'>{{thread.id}}</a> </span><span>  <a href='{% url "obiadekchan:thread" thread.id %}'>[Reply]</a></span></div>
 
         {%if thread.image%} {%thumbnail thread.image "240" as im %}
         <a href='{{thread.image.url}}' target="_blank" style='    float: left;
@@ -66,7 +66,7 @@
            margin-block-start: 1em;
            margin-block-end: 1em;
            margin-inline-start: 40px;
-           margin-inline-end: 40px;overflow-wrap: break-word; font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important; '>{{thread.thread_body}}</pre>
+           margin-inline-end: 40px;overflow-wrap: break-word; font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important; '>{{thread.post_body}}</pre>
             
         </div>
         <a href='{% url "obiadekchan:thread" thread.id %}'>Show more</a>
@@ -76,18 +76,18 @@
 
 
 
-    {%for answer in thread.thread_ans.all %}
+    {%for answer in thread.answers %}
     <div class='constainer' style='    display: block; boarder:solid; border-radius: 5px; baorder-color: darkgoldenrod; background: #ACD7DE;
             max-width: 100ch;margin-right: 550;
     margin-left: 360;'><div classs='post' style='padding: 5px;
     display: inline-block;
     margin-right: 10px;
     margin-left: 22px;'>
-        <div class='answer_title'>{%if answer.answer_title %} <span class='title'>{{answer.answer_title}}</span> {% endif %}<input type='radio' name='a_rep_choice' value='{{answer.id}}'></input> {%if answer.email%}
+        <div class='answer_title'>{%if answer.post_title %} <span class='title'>{{answer.post_title}}</span> {% endif %}<input type='radio' name='a_rep_choice' value='{{answer.id}}'></input> {%if answer.email%}
             <a href='mailto:{{answer.email}}'>Anonymous</a> {%else%}
             <span class='name'> Anonymous</span> {%endif%}
             <span class='date'> {{answer.date}} </span>
-            <span class='post_number'> post number: <a href='#'>{{answer.count}}</a> </span></div>
+            <span class='post_number'> post number: <a href='#'>{{answer.id}}</a> </span></div>
         {%if answer.image%} {%thumbnail answer.image "240" as ima %}
         <div class='answer_img'>
             <a href='{{answer.image.url}}' target="_blank" style='    float: left;
@@ -103,7 +103,7 @@
                     margin-block-end: 1em;     white-space: pre-wrap;  
                     margin-inline-start: 40px;
                     margin-inline-end: 40px; overflow-wrap: break-word;font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important;
-                    '>{{answer.answer_body}}</pre></div>
+                    '>{{answer.post_body}}</pre></div>
 
    
 

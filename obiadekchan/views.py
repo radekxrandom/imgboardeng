@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserCreationForm
+#from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from pathlib import Path
 from django.template import loader
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 from django.views import generic, View
@@ -12,8 +12,8 @@ from django.views.generic import TemplateView
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from django.contrib import messages 
-from .models import Thread, Answer, Banned, Misc
-from .forms import addThreadForm, addAnswerForm
+from .models import Thread, Answer, Banned, Misc, Post
+from .forms import addThreadForm, addAnswerForm, addPostForm
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import FormView
 from django.contrib.auth.decorators import login_required
@@ -23,7 +23,7 @@ from django.core.paginator import Paginator
 from .utils import checkBan, bumpThread, incrementPostCount
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
-
+from django.http import JsonResponse
 
 
 
@@ -35,25 +35,35 @@ banned_ips = []
 
 class IndexView(View):
     template_name = 'obiadekchan/index.html'
+    q2 = Post.objects.filter(is_thread=True).order_by('-thread_pos')
+    for q in q2:
+        num = len(q.replies.all())
+        q.answers = list(q.replies.all())
+        #if num > 3:
+         #   q.hidden = num - 3
     def get(self, request, *args, **kwargs):
-        q2 = Thread.objects.all().prefetch_related('thread_ans').order_by('-thread_pos')
+        q2 = Post.objects.all().filter(is_thread=True).order_by('-thread_pos')
+        for q in q2:
+            num = len(q.replies.all())
+            q.answers = list(q.replies.all())
+        #q2 = Thread.objects.all().prefetch_related('thread_ans').order_by('-thread_pos')
         paginator = Paginator(q2, 10)
         page = request.GET.get('page')
         q3 = paginator.get_page(page)
-        context = {'q2': q3, 'form': addThreadForm()}
+        context = {'q2': q3, 'form': addPostForm()}
         return render(request, 'obiadekchan/index.html', context)
 
     def post(self, request, *args, **kwargs):
-        form = addThreadForm(request.POST, request.FILES)
+        form = addPostForm(request.POST, request.FILES)
         if request.method == 'POST':
             if 'post_thread' in request.POST:
                 t_c_object = Misc.objects.first()
                 if t_c_object is None:
-                    t_c_object = Misc.objects.create(thread_count=0,post_count=0)
+                    t_c_object = Misc.objects.create(thread_count=0)
                 if form.is_valid():
                     from django.db.models import Max, Min
                     from ipware import get_client_ip
-                    result = Thread.objects.all().aggregate(Max('thread_pos'))
+                    result = Post.objects.all().aggregate(Max('thread_pos'))
                     xpkej = form.save(commit=False)
                     xpkej.thread_pos = bumpThread(result)
                     ip_address = get_client_ip(request)
@@ -61,31 +71,26 @@ class IndexView(View):
                     if checkBan(ip_address):
                         return HttpResponseRedirect(reverse('obiadekchan:banned'))
                     thread_count = t_c_object.thread_count
-                    xpkej.count = incrementPostCount(t_c_object)
                     t_c_object.thread_count = thread_count + 1
                     if t_c_object.thread_count > 50:
-                        det = Thread.objects.order_by('thread_pos').first()
+                        det = Post.objects.all().filter(is_thread=True).order_by('-thread_pos').first()
                         det.delete()
                         t_c_object.thread_count = t_c_object.thread_count - 1
+                    xpkej.is_thread = True
+                    xpkej.count = xpkej.id
                     t_c_object.save()
                     xpkej.save()
                     return HttpResponseRedirect(reverse('obiadekchan:index'))
                 else:
-                    q2 = Thread.objects.all().prefetch_related('thread_ans').order_by('-thread_pos')
+                    q2 = self.q2
                     return render(request, self.template_name, {'form':form, 'q2': q2})
             elif 'report_thread' in request.POST:
                 if 'rep_choice' in request.POST:
-                    thread = Thread.objects.get(pk=request.POST['rep_choice'])
-                    thread.rep = False
-                    thread.rep_res = request.POST.get('r_reason')
-                    thread.save()
+                    post = Post.objects.get(pk=request.POST['rep_choice'])
+                    post.rep = False
+                    post.rep_res = request.POST.get('r_reason')
+                    post.save()
                     return HttpResponseRedirect(reverse('obiadekchan:index'))
-                elif 'a_rep_choice' in request.POST:
-                    answer = Answer.objects.get(pk=request.POST['a_rep_choice'])
-                    answer.rep = False
-                    answer.rep_res = request.POST.get('r_reason')
-                    answer.save()
-                    return HttpResponseRedirect(reverse('obiadekchan:index'))  
             elif 'report_answer' in request.POST:
                 answer = Answer.objects.get(pk=request.POST['report_answer'])
                 answer.rep = False
@@ -95,43 +100,49 @@ class IndexView(View):
             
             
 class ThreadDetail(generic.DetailView):
-    model = Thread
+    model = Post
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = addAnswerForm()
-        Thread.objects.all().prefetch_related('thread_ans')
+        context['form'] = addPostForm()
+        q2 = Post.objects.filter(is_thread=True).order_by('-thread_pos')
+        for q in q2:
+            q.answers = list(q.replies.all())
         return context
 
 class ThreadPost(TemplateView):
     template_name = 'obiadekchan/thread.html'
-    model = Thread
+    model = Post
 
     def get_object(self, *args, **kwargs):
-        thread = get_object_or_404(Thread, pk=self.kwargs['pk'])
+        thread = get_object_or_404(Post, pk=self.kwargs['pk'])
         return thread
 
     def post(self, request, *args, **kwargs):
-        form = addAnswerForm(request.POST, request.FILES)
+        form = addPostForm(request.POST, request.FILES)
         if form.is_valid():
             t_form = form.save(commit=False)
-            thread = get_object_or_404(Thread, pk=self.kwargs['pk'])
-            t_form.Thread = thread
+            thread = get_object_or_404(Post, pk=self.kwargs['pk'])
+            #t_form.Thread = thread
             from django.db.models import Max
             from ipware import get_client_ip
             ip_address = get_client_ip(request)
             t_form.ip_address = ip_address
             if checkBan(ip_address):
                 return HttpResponseRedirect(reverse('obiadekchan:banned'))
-            result = Thread.objects.all().aggregate(Max('thread_pos'))
+            result = Post.objects.all().filter(is_thread=True).aggregate(Max('thread_pos'))
             mail = request.POST.get('op_email')
             if mail.lower() == 'sage':
                 thread.thread_pos = thread.thread_pos
             else:
                 thread.thread_pos = bumpThread(result)
-            t_c_object = Misc.objects.first()
-            t_form.count = incrementPostCount(t_c_object)
-            thread.save()
+            #t_c_object = Misc.objects.first()
+            t_form.count = len(thread.replies.all())+1
+            t_form.is_thread = False
+            t_form.id = thread.id + len(thread.replies.all()) + 1
+            t_form.date = timezone.now()
             t_form.save()
+            thread.replies.add(t_form)
+            thread.save()
             if mail.lower() == 'noko':
                 return HttpResponseRedirect(reverse('obiadekchan:index'))            
             return HttpResponseRedirect(self.request.path_info)
@@ -249,3 +260,15 @@ def banned(request):
     ban = Banned.objects.all().filter(ip_ad=ip_address)
     context = {'ban': ban}
     return render(request, template_name, context)
+
+
+def linking(request, pk):
+    post = Post.objects.filter(id=pk)
+    if len(post) == 0:
+        return HttpResponseNotFound('<h1>Page not found</h1>')
+    if post[0].is_thread:
+        url = "{}".format(pk)
+    else:
+        url = "{}".format(post[0].replies.all()[0].id)
+
+    return redirect('obiadekchan:thread',pk=url)

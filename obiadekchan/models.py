@@ -2,8 +2,23 @@ from django.db import models
 
 # Create your models here.
 
-
-
+class Post(models.Model):
+    thread_pos = models.IntegerField(default=1)
+    #pub_date = models.DateTimeField(auto_now_add=True)
+    op_email = models.CharField(null=True,max_length=20,blank=True)
+    post_title = models.CharField(null=True,max_length=20,blank=True)
+    post_body = models.TextField()
+    ip_address = models.GenericIPAddressField(protocol='IPv4')
+    image = models.ImageField(upload_to='chanImgs/', blank=True, null=True)
+    rep = models.BooleanField(blank=True, default=True)
+    rep_reason = models.CharField(null=True, blank=True, max_length=20)
+    banned = models.BooleanField(blank=True, default=True)
+    count = models.IntegerField(null=True,blank=True)
+    date = models.DateTimeField(auto_now_add=True, blank=True,null=True)
+    rep_res = models.CharField(null=True, blank=True, default='No reason provided', max_length=200)
+    password = models.CharField(max_length=20,null=True,blank=True)
+    replies = models.ManyToManyField('self', blank=True, related_name='threadd')
+    is_thread = models.BooleanField()
 
 
 class Thread(models.Model):
@@ -17,7 +32,7 @@ class Thread(models.Model):
     rep = models.BooleanField(blank=True, default=True)
     rep_reason = models.CharField(null=True, blank=True, max_length=20)
     banned = models.BooleanField(blank=True, default=True)
-    count = models.IntegerField()
+    count = models.IntegerField(blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True, blank=True)
     rep_res = models.CharField(null=True, blank=True, default='No reason provided', max_length=200)
     password = models.CharField(max_length=20,null=True,blank=True)
@@ -48,4 +63,4 @@ class Banned(models.Model):
 
 class Misc(models.Model):
     thread_count = models.IntegerField()
-    post_count = models.IntegerField()
+    #post_count = models.IntegerField()

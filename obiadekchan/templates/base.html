@@ -188,7 +188,7 @@ for(let line in lines){
            if(words[word].search("&gt;&gt;") === 0){
                let w = words[word].split("&gt;&gt;")[1]
                let toReplace = `&gt;&gt;${w}`;
-               let replacement = `<a data-id="${w}" href="/obiadekchan/${w}">>>${w}</a>`;
+               let replacement = `<a data-id="${w}" href="/obiadekchan/q/${w}">>>${w}</a>`;
                words[word] = words[word].replace(toReplace, replacement);
            }
        }

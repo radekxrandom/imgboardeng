@@ -1,6 +1,6 @@
 from django import forms
 from django.db import models
-from .models import Thread, Answer, Banned
+from .models import Thread, Answer, Banned, Post
 from bootstrap_modal_forms.forms import BSModalForm
 
 
@@ -15,3 +15,7 @@ class addAnswerForm(forms.ModelForm):
         model = Answer
         fields = ['op_email','answer_title','answer_body','image']
 
+class addPostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['op_email','post_title','post_body','image']
