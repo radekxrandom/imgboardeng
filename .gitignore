@@ -3,3 +3,7 @@
 000*.py
 db.sqlite3
 0001_initial.py
+**/cache
+**/chanImgs
+**/__pycache__
+**/migrations

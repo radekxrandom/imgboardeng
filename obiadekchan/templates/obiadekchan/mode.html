@@ -55,29 +55,29 @@
                               </div>
                             </div>
                           </div>
-                <h2>Reported threads</h2>
+                <h2>Reported posts</h2>
                 <table>
                     <tr>
-                        <th>Thread name</th>
-                        <th>Thread body</th>
-                        <th>Thread ip</th>
+                        <th>Post name</th>
+                        <th>Post body</th>
+                        <th>Poster ip</th>
                         <th>Report reason</th>
                         <th>Delete</th>
                         <th>Ban</th>
                         <th>Remove report</th>
                     </tr>
-                    {%for thread in threads%}
+                    {%for post in posts%}
                     <tr>
-                        <td>{{thread.thread_title}}</td>
-                        <td>{{thread.thread_body|linebreaks}}</td>
-                        <td>{{thread.ip_address}}</td>
-                        <td>{{thread.rep_res}}</td>
-                        <td><form method='post' >{% csrf_token %}<button type='submit' name='del_thread' value='{{thread.id}}'>Delete thread</button></form></td>
-                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{thread.id}}">
+                        <td>{{post.post_title}}</td>
+                        <td>{{post.post_body|linebreaks}}</td>
+                        <td>{{post.ip_address}}</td>
+                        <td>{{post.rep_res}}</td>
+                        <td><form method='post' >{% csrf_token %}<button type='submit' name='del_post' value='{{post.id}}'>Delete thread</button></form></td>
+                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal{{post.id}}">
                                 Ban user
                               </button>
                             </td>
-                        <td><form method='post'>{% csrf_token %} <button type='submit' name='del_thread_report' value='{{thread.id}}'>Delete report</button> </form></td>
+                        <td><form method='post'>{% csrf_token %} <button type='submit' name='del_report' value='{{post.id}}'>Delete report</button> </form></td>
             
                     </tr>
                     <!-- Modal -->
@@ -94,7 +94,7 @@
               <form method='post'>{%csrf_token%}
                    <p>Reason: <input class="u-full-width" type="text" name="b_reason" style='border-radius:0px'/></p>
                     <p>Date when ban expires: <input type="text" class="datepicker" name='b_length'></p>
-                    <button type="submit" class="btn btn-primary" name='ban_ip' value='{{thread.id}}'>Ban</button>
+                    <button type="submit" class="btn btn-primary" name='ban_ip' value='{{post.id}}'>Ban</button>
                 </form>
               
             </div>
@@ -108,59 +108,6 @@
                     {%endfor%}
                 </table>
                 <br>
-                <h2>Reported posts</h2>
-                <table>
-                    <tr>
-                        <th>Post name</th>
-                        <th>Post body</th>
-                        <th>Poster ip</th>
-                        <th>Report reason</th>
-                        <th>Delete</th>
-                        <th>Ban</th>
-                        <th>Delete report</th>
-                    </tr>
-                    {%for answer in answers%}
-                    <tr>
-                        <td>{{answer.answer_title}}</td>
-                        <td>{{answer.answer_body|linebreaks}}</td>
-                        <td>{{answer.ip_address}}</td>
-                        <td>{{answer.rep_res}}</td>
-                        <td><form method='post' >{% csrf_token %}<button type='submit' name='del_answer' value='{{answer.id}}'>Delete answer</button></form></td>
-                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModall{{answer.id}}">
-                                Ban user
-                              </button>
-                            </td>
-                            <td><form method='post'>{% csrf_token %} <button type='submit' name='del_answer_report' value='{{answer.id}}'>
-                                Delete report</button> </form></td>
-
-                                           </tr>
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModall{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title" id="exampleModalLabel">Ban user</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">
-                                  <form method='post'>{%csrf_token%}
-                                       <p>Reason: <input class="u-full-width" type="text" name="b_reason" style='border-radius:0px'/></p>
-                                        <p>Date when ban expires: <input type="text" class="datepicker" name='b_length'></p>
-                                  
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                  <button type="submit" class="btn btn-primary" name='ban_ans_ip' value='{{answer.id}}'>Ban</button>
-                                </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                    {%endfor%}
-                        </table>
-                        <br>
                    
                     <h2>Banned users</h2>
                     <table>

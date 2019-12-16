@@ -84,19 +84,13 @@ class IndexView(View):
                 else:
                     q2 = self.q2
                     return render(request, self.template_name, {'form':form, 'q2': q2})
-            elif 'report_thread' in request.POST:
+            elif 'report_post' in request.POST:
                 if 'rep_choice' in request.POST:
                     post = Post.objects.get(pk=request.POST['rep_choice'])
                     post.rep = False
                     post.rep_res = request.POST.get('r_reason')
                     post.save()
                     return HttpResponseRedirect(reverse('obiadekchan:index'))
-            elif 'report_answer' in request.POST:
-                answer = Answer.objects.get(pk=request.POST['report_answer'])
-                answer.rep = False
-                answer.rep_res = request.POST.get('r_reason')
-                answer.save()
-                return HttpResponseRedirect(reverse('obiadekchan:index'))
             
             
 class ThreadDetail(generic.DetailView):
@@ -168,68 +162,39 @@ class ModeratorView(View):
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
         template_name = 'obiadekchan/mode.html'
-        context = {'threads': Thread.objects.all().filter(rep=False),
-                   'answers':Answer.objects.all().filter(rep=False), 'banned': Banned.objects.all()}
+        context = {'posts': Post.objects.all().filter(rep=False),
+                   'banned': Banned.objects.all()}
         return render(request, template_name, context)
 
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             from ipware import get_client_ip
-            if 'del_thread' in request.POST:
-                thread = Thread.objects.get(pk=request.POST['del_thread'])
-                thread.delete()
+            if 'del_post' in request.POST:
+                post = Post.objects.get(pk=request.POST['del_post'])
+                post.delete()
                 t_c_object = Misc.objects.first()
                 t_c_object.thread_count = t_c_object.thread_count - 1
                 t_c_object.save()
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
             elif 'ban_ip' in request.POST:
-                thread = Thread.objects.get(pk=request.POST['ban_ip'])
-                ip_address = thread.ip_address
+                post = Post.objects.get(pk=request.POST['ban_ip'])
+                ip_address = post.ip_address
                 b_reason = request.POST.get('b_reason')
                 b_length = request.POST.get('b_length')
-                content = thread.thread_body
-                ban = Banned.objects.create(ip_ad=ip_address, reason=b_reason, length=b_length, post_content=content)
-                return HttpResponseRedirect(reverse('obiadekchan:mode'))
-            elif 'del_answer' in request.POST:
-                answer = Answer.objects.get(pk=request.POST['del_answer'])
-                answer.delete()
-                return HttpResponseRedirect(reverse('obiadekchan:mode'))
-            elif 'ban_ans_ip' in request.POST:
-                answer = Answer.objects.get(pk=request.POST['ban_ans_ip'])
-                ip_address = answer.ip_address
-                b_reason = request.POST.get('b_reason')
-                b_length = request.POST.get('b_length')
-                content = answer.answer_body
+                content = post.post_body
                 ban = Banned.objects.create(ip_ad=ip_address, reason=b_reason, length=b_length, post_content=content)
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
             elif 'unban' in request.POST:
                 ban = Banned.objects.get(pk=request.POST['unban'])
                 ban.delete()
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
-            elif 'del_thread_report' in request.POST:
-                thread = Thread.objects.get(pk=request.POST['del_thread_report'])
-                thread.rep = True
-                thread.rep_reason = None
-                thread.save()
+            elif 'del_report' in request.POST:
+                post = Post.objects.get(pk=request.POST['del_report'])
+                post.rep = True
+                post.rep_reason = None
+                post.save()
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
-            elif 'del_answer_report' in request.POST:
-                answer = Answer.objects.get(pk=request.POST['del_answer_report'])
-                answer.rep = True
-                answer.rep_reason = None
-                answer.save()
-                return HttpResponseRedirect(reverse('obiadekchan:mode'))
-
-
-class CatalogView(View):
-
-    def get(self, request, *args, **kwargs):
-        threads = Thread.objects.all().order_by('-thread_pos')
-        context = {'threads': threads}
-        return render(request, 'obiadekchan/catalog.html', context) 
-
-
-
 
 
 def logout(request):
