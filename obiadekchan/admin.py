@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .models import Thread, Answer
+from .models import Post
 
-admin.site.register(Thread)
-admin.site.register(Answer)
+admin.site.register(Post)

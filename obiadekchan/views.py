@@ -12,8 +12,8 @@ from django.views.generic import TemplateView
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from django.contrib import messages 
-from .models import Thread, Answer, Banned, Misc, Post
-from .forms import addThreadForm, addAnswerForm, addPostForm
+from .models import Banned, Misc, Post
+from .forms import addPostForm
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import FormView
 from django.contrib.auth.decorators import login_required
@@ -78,6 +78,8 @@ class IndexView(View):
                         t_c_object.thread_count = t_c_object.thread_count - 1
                     xpkej.is_thread = True
                     xpkej.count = xpkej.id
+                    if 'is_mode' in request.POST:
+                        xpkej.is_mode = True
                     t_c_object.save()
                     xpkej.save()
                     return HttpResponseRedirect(reverse('obiadekchan:index'))
@@ -133,10 +135,10 @@ class ThreadPost(TemplateView):
             else:
                 thread.thread_pos = bumpThread(result)
             #t_c_object = Misc.objects.first()
-            t_form.count = len(thread.replies.all())+1
+           # t_form.count = len(thread.replies.all())+1
             t_form.is_thread = False
-            t_form.id = thread.id + len(thread.replies.all()) + 1
             t_form.date = timezone.now()
+            #if 'is_'
             t_form.save()
             thread.replies.add(t_form)
             thread.save()
@@ -229,6 +231,12 @@ def banned(request):
     context = {'ban': ban}
     return render(request, template_name, context)
 
+
+def ajaxPostPreview(request,pk):
+    post = get_object_or_404(Post, pk=pk)
+    #post = Post.objects.filter(id=pk)
+    context = {'post': post}
+    return render(request,'obiadekchan/post_preview.html', context)
 
 def linking(request, pk):
     post = Post.objects.filter(id=pk)

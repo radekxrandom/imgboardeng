@@ -10,22 +10,25 @@
                 <meta name="author" content="">
                 <link rel="icon" href="https://i.imgur.com/Tv3Uxj9.png">
             <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-             <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-             <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-           
-             <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
             {%block head%}
             <title>Obiadekchan</title>
             <!-- kolorki na zapas #C4D5DD #CFCFCF #DADADA ->#C4D5DD #BBCAD1 #BBC6D1  #9FB6C1 #9FB6C1-->
             {%endblock%}
             <style>
               
-            
+              div.post_hidden- {
+   display: none;
+   position: absolute;
+   width: 280px;
+   padding: 10px;
+   background: #eeeeee;
+   color: #000000;
+   border: 1px solid #1a1a1a;
+   font-size: 90%;
+ }
 
                     body {margin:0;
                       backgrounda-color:#DADADA;
@@ -62,9 +65,12 @@
                       background-color: #4CAF50;
                     }
                     </style>
-                    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+                      <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js'></script>
 
-        </head>
+                    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+                    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+                    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+                    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>        </head>
         <body>
                 <ul class='nav' style='z-index:1;'>
                         <li><a href="{% url 'obiadekchan:index' %} ">/b/</a></li>
@@ -84,10 +90,7 @@
                       <br>
                 {%block body%}
                 {%endblock%}
-                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 
 <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -142,6 +145,7 @@
       </div>
     </div>
   </div>
+  <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js'></script>
 
   <script>
       function openTab(evt, setTab) {
@@ -188,7 +192,9 @@ for(let line in lines){
            if(words[word].search("&gt;&gt;") === 0){
                let w = words[word].split("&gt;&gt;")[1]
                let toReplace = `&gt;&gt;${w}`;
-               let replacement = `<a data-id="${w}" href="/obiadekchan/q/${w}">>>${w}</a>`;
+               let replacement = `<a class='post_link' style='position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;' data-id="${w}" href="/obiadekchan/q/${w}">>>${w}</a><div class="quote_preview"     style="display: inline-flex; position: absolute; z-index:999;"></div>`;
                words[word] = words[word].replace(toReplace, replacement);
            }
        }
@@ -233,6 +239,8 @@ $(document).ready(innit);
     var choice = localStorage.pref;
     switch(choice){
       case 'opt0':
+      
+      $('body').css('background-color','#DADADA');
       $('body').css('background-color','#DADADA');
       break;
       case 'opt1':
@@ -265,9 +273,52 @@ $(document).ready(save);
  
  
  </script>
-     
 
-    
+ <script>
+
+$(document).ready(function(){
+        $('a.post_link').mouseenter(function() {
+            var pid = $(this).data('id');
+         $(this).next('div').load('http://127.0.0.1:8000/obiadekchan/ajax/posts/'+pid);
+     });
+     $('a.post_link').mouseleave(function() {
+        $( this ).next( "div" ).empty();
+     });
+     $('#constainer').not('a.post_link').mouseenter(function(){  
+$('a.post_link').next('div').empty();
+ 
+  });
+  })
+ 
+ 
+ </script>
+   <!-- x
+  <script>
+  $(document).ready(function(){
+        $('a.post_link').mouseenter(function() { 
+            var pid = $(this).data('id');
+            var link = 'http://127.0.0.1:8000/obiadekchan/ajax/posts/'+pid;
+            var tap = $(this).next('div')
+            $.ajax({url: link, success: function(data){
+              console.log(data)
+              
+              $(tap).html(data);
+            }});
+
+     });
+     $('a.post_link').mouseleave(function() { 
+        $( this ).next( "div" ).empty();
+     });
+     $('#constainer').not('a.post_link').mouseenter(function(){  
+$('a.post_link').next('div').empty();
+
+  });
+  })
+
+    </script>
+
+       -->
 
             </body>
             </html>
+        

@@ -1,0 +1,54 @@
+{% load static %}
+<html>
+        <head>
+     
+        </head>
+        <body>
+{%block body%}
+
+{%load thumbnail%}
+
+<span class='preview' style=' display:inline-flex; z-index:1;
+        background: #ACD7DE;
+      overflow: hidden; border: dotted;
+        width: fit-content;       border-radius:7px; 
+        height: fit-content; 
+        clear: both; 
+        '><span class='post' style='display: inline-block;padding: 2;margin-right: 10;'>
+    <div class='thread_title' style='    padding: 5px;
+        background-color: #ACD7DE; 
+       display: flex;
+position: relative; margin-top: -40;
+    margin-bottom: -60;
+'><input type='radio' name='rep_choice' value='{{post.id}}'></input>{%if post.post_title %} <span class='title'>{{post.post_title}}</span> {% endif %} {%if post.op_email%}
+        <a href='mailto:{{post.op_email}}' style='color:darkgrey;'>Anonymouos</a> {%else%}
+        <span class='name'> Anonymous</span> {%endif%}
+        <span class='date'> {{post.date}} </span>
+        <span class='post_number'> post number: <a href='#'>{{post.id}}</a> </span><span>  <a href='{% url "obiadekchan:thread" post.id %}'>[Reply]</a></span></div>
+
+    {%if post.image%} {%thumbnail post.image "240" as im %}
+    <a href='{{post.image.url}}' target="_blank" style='    float: left;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 3px;
+    margin-bottom: 0;
+    position: relative;
+    display: block;
+    margin-bottom: 20;
+   '><img src='{{im.url}}' /></a>
+    {%endthumbnail%} {%endif%}
+    <pre style='
+      margin-top: -20;
+
+    display: flex;
+    white-space: pre-wrap;
+margin-bottom: -50px;
+    margin-inline-start: 40px;
+    margin-inline-end: 40px;
+    overflow-wrap: break-word;
+    font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important; '>{{post.post_body}}</pre>
+        
+        </span>
+</span>
+{%endblock%}
+</body>

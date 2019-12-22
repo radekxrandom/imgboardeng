@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
 
     <style>
 
@@ -25,6 +25,7 @@
                 <p>Title: {{form.post_title}}</p>
                 <p id='thread_text'> {{form.post_body}}</p>
                 <p>{{form.image}}</p>
+                <input type='radio' name='is_mode' id='mode'><label for='mode'>Add moderator label</label>
                 <button class='btn btn-primary' type='submit' value='post_thread' name='post_thread'>Submit</button>
             </form>
     </center>
@@ -115,7 +116,7 @@
     {%endfor%} </div> <br>{%endfor%}
 <br><br>
     <button type='button' style='float:right;    margin-top: 100;' data-toggle="modal" data-target='#t_banResModal'>
-        Submit thread report</button>
+        Submit report</button>
 
     <!-- Modal -->
     <div class="modal fade" id="t_banResModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
