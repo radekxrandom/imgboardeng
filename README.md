@@ -10,7 +10,7 @@ Users also have the ability to report posts (even multiple ones at once), and th
 ![screenshot](http://i.imgur.com/LRPrmr5.png)
 ![sc](https://i.imgur.com/1iFB3PH.png)
 
-I've implemented post preview using jquery's ajax. When script detects '>>xx' tag in someone's post it add's to it <a href> element which on click takes user to thread in which the post is and on hover it generates another link (second link is based on data-id attritbute of the first one), loads the post with ajax and injects it into invisible span element next to every '>xx' link. It also adds an adnotation under a cited post.
+I've implemented post preview using jquery's ajax. When script detects '>>xx' tag in someone's post it add's to it a href element which on click takes user to thread in which the post is and on hover it generates another link (second link is based on data-id attritbute of the first one), loads the post with ajax and injects it into invisible span element next to every '>xx' link. It also adds an adnotation under a cited post.
 This is how it looks.
 ![sc](https://i.imgur.com/04AmhrT.jpg)
 
