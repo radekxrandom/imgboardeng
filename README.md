@@ -23,6 +23,6 @@ There are also some theme settings, user can change background color, font of po
 
 As we live in the age of ever increasing mobile devices popularity during which every day more and more people chose to surf the web from their phones, I have taken much care in making my imageboard responsive, and as far as imageboards go it looks rather decent on small screens. 
 I have also taken care as to make my imageboard responsive
-<p float="left">
+<center><p style='  text-align:center'>
 <img src='https://i.imgur.com/2tiUSTx.png' width='200' height='410'/><img src='https://i.imgur.com/3uGgpvH.png' width='200' height='410'/>
-  </p>
+  </p></center>
