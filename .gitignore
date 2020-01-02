@@ -7,3 +7,10 @@ db.sqlite3
 **/chanImgs
 **/__pycache__
 **/migrations
+**/__pycache__
+*.log
+*.pot
+*.pyc
+__pycache__
+media
+migrations
