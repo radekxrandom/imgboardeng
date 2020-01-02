@@ -12,6 +12,7 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
     path('banned/', views.banned, name='banned'),
+    path('history/',views.history,name='history'),
     path('q/<int:pk>', views.linking),
     path('ajax/posts/<int:pk>', views.ajaxPostPreview, name='ajax_post_preview')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

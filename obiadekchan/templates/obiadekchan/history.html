@@ -1,0 +1,73 @@
+{% extends 'base.html' %} {% load static %}
+<html>
+
+<head>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+
+    <style>
+
+    </style>
+</head>
+
+<body >
+    {%block body%}
+    {%load thumbnail%}
+
+    {% regroup posts by ip_address as users %}
+    {% for user in users%}
+    <div class="container">
+        <div class="container-heading"><h4><b>{{ user.grouper }} Click to show all posts made by this user.</b></h4>
+        <div class='hidden'>
+        {% for answer in user.list %}
+        <div class='constainer' style='  color:black;  display: inline-flex; boarder:solid; border-radius: 5px; baorder-color: darkgoldenrod; background: #ACD7DE;
+        max-width: 50%; margin-bottom:0.4%;
+    margin-left: 1%;'><div classs='post' style='padding: 5px;
+    display: inline-block;
+    ;'>
+    <div class='answer_title'><input type='checkbox' name='rep_choice' value='{{answer.id}}'></input>{%if answer.post_title %}<span class='title'> {{answer.post_title}}</span> {% endif %}{%if z.is_mode%}
+        <span style='color:#65CC2D;font-weight: bold;'> ☘️Moderator</span> 
+        {%else%}  {%if answer.email%}
+        <a href='mailto:{{answer.email}}'>Anonymous</a> {%else%}
+        <span class='name'> Anonymous</span> {%endif%}{%endif%}{%if answer.is_op%}<span style='color:darkred;font-weight: bold;'>(OP)</span>{%endif%}
+        <span class='date'> {{answer.date}} </span>
+        <span class='post_number'> post number: <a href='#'>{{answer.id}}</a> </span></div>
+    {%if answer.image%} {%thumbnail answer.image "240" as ima %}
+    <div class='answer_img'>
+        <a href='{{answer.image.url}}' target="_blank" style='    float: left;
+      margin: 2%;
+    
+    
+       posiation: relative; display: flex; 
+    '><img src='{{ima.url}}' /></a>
+    </div>
+    {%endthumbnail%} {%endif%}
+    <div class='p_body'><pre style='margin-block-start: 1em;
+                margin-block-end: 1em;     white-space: pre-wrap;  
+                margin-inline-start: 40px;padding-left: 3%;
+                margin-inline-end: 40px; overflow-wrap: break-word;font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important;
+                '>{{answer.post_body}}</pre></div>
+                <div class='mentions' style='font-size: .8em!important;
+                padding: 0;
+                padding-left: 3%;
+                display: table; 'id='{{answer.id}}'> </div>
+    
+    
+    </div>
+    </div>
+    
+    <br>
+        {% endfor %}
+    </div></div>
+      </div>
+    {% endfor %}
+    <script>
+        $(document).ready(function() {
+        $('.container-heading').click(function() {
+            $(this).find(".hidden").toggleClass('open');
+        });
+    });
+    </script>
+    {%endblock%}
+</body>
+
+</html>

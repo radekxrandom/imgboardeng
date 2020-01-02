@@ -55,6 +55,8 @@
                               </div>
                             </div>
                           </div>
+                          <span style='float:right;'><a href='{% url "obiadekchan:logout" %}'>[Log out]</a></span>  <span style='float:right;'><a href='{% url "obiadekchan:history" %}'>[See users post history]</a></span> 
+
                 <h2>Reported posts</h2>
                 <table>
                     <tr>
@@ -92,8 +94,10 @@
             </div>
             <div class="modal-body">
               <form method='post'>{%csrf_token%}
-                   <p>Reason: <input class="u-full-width" type="text" name="b_reason" style='border-radius:0px'/></p>
-                    <p>Date when ban expires: <input type="text" class="datepicker" name='b_length'></p>
+                 <p>Reason: <input class="u-full-width" type="text" name="b_reason" style='border-radius:0px'/></p>
+                    <p>Date when ban expires: <input type="datetime-local" class="datepicker" name='b_length' min="2019-12-23T00:00" required></p>
+                    <!--  <p>{{banForm.length}}</p>
+                    <p>{{banForm.reason}}</p>-->
                     <button type="submit" class="btn btn-primary" name='ban_ip' value='{{post.id}}'>Ban</button>
                 </form>
               
@@ -115,6 +119,7 @@
                             <th>Banned ips</th>
                             <th>Ban reason</th>
                             <th>Banned post</th>
+                            <th>Banned until:</th>
                             <th>Unban</th>
                         </tr>
                         {%for ban in banned%}
@@ -122,6 +127,7 @@
                         <td>{{ban.ip_ad}}</td>
                         <td>{{ban.reason}}</td>
                         <td>{{ban.post_content|linebreaks}}</td>
+                        <td>{{ban.length}}</td>
                         <td><form method='post'  >{% csrf_token %} <button type='submit' name='unban' value='{{ban.id}}' >Unban</form></td>
                     </tr>
                 </table>

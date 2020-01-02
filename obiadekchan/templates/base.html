@@ -1,153 +1,315 @@
-{% load static %}
-{%load obiadekchan_extras%}
+{% load static %} {%load obiadekchan_extras%}
 <html>
-        <head>
-                <meta charset="utf-8">
-                <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                <meta name="viewport" content="width=device-width, initial-scale=1">
-                <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-                <meta name="description" content="">
-                <meta name="author" content="">
-                <link rel="icon" href="https://i.imgur.com/Tv3Uxj9.png">
-            <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="https://i.imgur.com/Tv3Uxj9.png" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
-            {%block head%}
-            <title>Obiadekchan</title>
-            <!-- kolorki na zapas #C4D5DD #CFCFCF #DADADA ->#C4D5DD #BBCAD1 #BBC6D1  #9FB6C1 #9FB6C1-->
-            {%endblock%}
-            <style>
-              
-              div.post_hidden- {
-   display: none;
-   position: absolute;
-   width: 280px;
-   padding: 10px;
-   background: #eeeeee;
-   color: #000000;
-   border: 1px solid #1a1a1a;
-   font-size: 90%;
- }
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    {%block head%}
+    <title>Obiadekchan</title>
+    <!-- kolorki na zapas #C4D5DD #CFCFCF #DADADA ->#C4D5DD #BBCAD1 #BBC6D1  #9FB6C1 #9FB6C1-->
+    {%endblock%}
+    <style>
+      .container-heading {
+        height: auto;
+        text-decoration: underline;
+        color: blue;
+        cursor: pointer;
+      }
+      .hidden {
+        display: none;
+        height: 0px;
+        -webkit-transition: height, 0.5s linear;
+        -moz-transition: height, 0.5s linear;
+        -ms-transition: height, 0.5s linear;
+        -o-transition: height, 0.5s linear;
+        transition: height, 0.5s linear;
+      }
+      .hidden.open {
+        display: inline-block;
+        height: 200px;
+        -webkit-transition: height, 0.5s linear;
+        -moz-transition: height, 0.5s linear;
+        -ms-transition: height, 0.5s linear;
+        -o-transition: height, 0.5s linear;
+        transition: height, 0.5s linear;
+      }
+      div.post_hidden- {
+        display: none;
+        position: absolute;
+        width: 280px;
+        padding: 10px;
+        background: #eeeeee;
+        color: #000000;
+        border: 1px solid #1a1a1a;
+        font-size: 90%;
+      }
+      input[type="password"] {
+        background-color: white;
+      }
+      input[type="password"]:focus {
+        outline: 0;
+      }
+      @font-face {
+        font-family: "password";
+        font-style: normal;
+        font-weight: 400;
+        src: url(https://jsbin-user-assets.s3.amazonaws.com/rafaelcastrocouto/password.ttf);
+      }
+      @media screen and (max-width: 480px) {
+        .constainer {
+          max-width: 100% !important;
+          margin: 1%;
+        }
+        pre {
+          display: inline-block !important;
+        }
+        .thread_title {
+          font-size: 85%;
+        }
+      }
+      input.key {
+        font-family: "password";
 
-                    body {margin:0;
-                      backgrounda-color:#DADADA;
-                    }
-                    
-                    ul {
-                      list-style-type: none;
-                      margin: 0;
-                      padding: 0;
-                      overflow: hidden;
-                      background-color: #333;
-                      position: fixed;
-                      top: 0;
-                      width: 100%;
-                    }
-                    
-                    li {
-                      float: left;
-                    }
-                    
-                    li a {
-                      display: block;
-                      color: white;
-                      text-align: center;
-                      padding: 5px 8px;
-                      text-decoration: none;
-                    }
-                    
-                    li a:hover:not(.active) {
-                      background-color: #111;
-                    }
-                    
-                    .active {
-                      background-color: #4CAF50;
-                    }
-                    </style>
-                      <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js'></script>
+        width: 100px;
+        height: 16px;
+      }
+      body {
+        margin: 0;
+        backgrounda-color: #dadada;
+        font-size: 90%;
+        font-family: Roboto, helvetica neue, Helvetica, Arial, sans-serif;
+      }
+      body:not(.modal-content) {
+        background-image: url("htatps://i.imgur.com/AhuTgp3.png");
+        background-size: 20%;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: right bottom;
+        z-index: 2000;
+        position: relative;
+      }
+      body:not(.thread_title) {
+        z-index: 10000;
+      }
+      span.spoiler:hover {
+        color: white;
+      }
+      .spoiler {
+        color: black;
+        background: black;
+      }
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+        position: fixed;
+        top: 0;
+        width: 100%;
+      }
 
-                    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-                    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-                    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
-                    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>        </head>
-        <body>
-                <ul class='nav' style='z-index:1;'>
-                        <li><a href="{% url 'obiadekchan:index' %} ">/b/</a></li>
-                        <li><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#settingsModal">
-                            Settings
-                          </button></li>
-                      </ul>
-                      <br><br><br>
-                      <div class='container'>
-                        <center> 
-                          {% with "baner.png,baner1.gif,baner2.gif,baner3.jpg,baner4.png"|split:","|random as image %}
-                       <img src='{%static image %}' />
-                        <h2>/b/ - random</h2>
-                        {% endwith %}
-                      </center>
-                      </div>
-                      <br>
-                {%block body%}
-                {%endblock%}
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      li {
+        float: left;
+      }
 
-<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
+      li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 5px 8px;
+        text-decoration: none;
+      }
+
+      li a:hover:not(.active) {
+        background-color: #111;
+      }
+
+      .active {
+        background-color: #4caf50;
+      }
+    </style>
+    <script
+      type="text/javascript"
+      src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js"
+    ></script>
+
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css"
+    />
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  </head>
+  <body>
+    <ul class="nav" style="z-index:1;">
+      <li><a href="{% url 'obiadekchan:index' %} ">/b/</a></li>
+      <li>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#settingsModal"
+        >
+          Settings
+        </button>
+      </li>
+    </ul>
+    <br /><br /><br />
+    <div class="container">
+      <center>
+        {% with "baner.png,baner1.gif,baner2.gif,baner3.jpg,baner4.png"|split:","|random as image %}
+        <img src="{%static image %}" />
+        <h2>/b/ - random</h2>
+        {% endwith %}
+      </center>
+    </div>
+    <br />
+    {%block body%} {%endblock%}
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+
+    <div
+      class="modal fade"
+      id="settingsModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background:#ACD7DE;">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
             <div class="w3-container">
-               
-                <div class="w3-bar w3-black">
-                  <button class="w3-bar-item w3-button tablink w3-cyan" onclick="openTab(event,'settings')">Site settings</button>
-                  <button class="w3-bar-item w3-button tablink" onclick="openTab(event,'theme')">Theme settings</button>
-                </div>
-                
-                <div id="settings" class="w3-container w3-border settingstab">
-                  <h2>Site settings</h2>
-                  <span>Move form to the bottom: 
-                      <select id='form_bot'>
-                        <option id='fopt0' selected>No</option>
-                        <option id="fopt1">Yes</option>
-                      </select>
-                    </span>
-                </div>
-              
-                <div id="theme" class="w3-container w3-border settingstab" style="display:none">
-                  <h2>Theme settings</h2>
-                  <p>Piesowanie: nielegalne!!</p> 
-                  <span>Select background colour: 
-                    <select id='back-col'>
-                      <option id='opt0' selected>Default</option>
-                      <option id="opt1">Blue</option>
-                      <option id="opt2">Yellow</option>
-                      <option id="opt3">Dark</option>
-                      <option id="opt4">White</option>
-                    </select>
-                  </span>
-                    
-                </div>
-              
-                
+              <div class="w3-bar w3-black">
+                <button
+                  class="w3-bar-item w3-button tablink w3-cyan"
+                  onclick="openTab(event,'theme')"
+                >
+                  Theme settings
+                </button>
+                <button
+                  class="w3-bar-item w3-button tablink"
+                  onclick="openTab(event,'settings')"
+                >
+                  Site settings
+                </button>
               </div>
-              
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="save_settings">Save settings</button>
+
+              <div id="theme" class="w3-container w3-border settingstab">
+                <h2>Theme settings</h2>
+                <p>Piesowanie: nielegalne!!</p>
+                <span
+                  >Select background colour:
+                  <select id="back-col">
+                    <option id="opt0" selected>Default</option>
+                    <option id="opt1">Blue</option>
+                    <option id="opt2">Yellow</option>
+                    <option id="opt3">Dark</option>
+                    <option id="opt4">White</option>
+                  </select> </span
+                ><br />
+                <span
+                  >Select regular font:
+                  <select id="reg-fnt">
+                    <option id="rfnt0" selected>Default font</option>
+                    <option id="rfnt1">Another font</option>
+                  </select> </span
+                ><br />
+                <span
+                  >Select posts font:
+                  <select id="post-fnt">
+                    <option id="pfnt0" selected>Default font</option>
+                    <option id="pfnt1">Anoter font</option>
+                    <option id="pfnt2">And yet another font</option>
+                    <option id="pfnt3">Default 2</option>
+                  </select> </span
+                ><br />
+                <span
+                  >Select font size:
+                  <select id="size-fnt">
+                    <option id="sfnt0" selected>Default (medium)</option>
+                    <option id="sfnt1">Very small</option>
+                    <option id="sfnt2">Small</option>
+                    <option id="sfnt3">Not small, but sill not medium</option>
+                    <option id="sfnt4">Large</option>
+                    <option id="sfnt5">Double gulp siz</option>
+                  </select> </span
+                ><br />
+                <span
+                  >Show line separating each thread:
+                  <select id="sep-line">
+                    <option id="show" selected>Show line</option>
+                    <option id='dontshow'>Don't show the line</option>
+                  </select>
+                </span>
+              </div>
+
+              <div
+                id="settings"
+                style="display:none"
+                class="w3-container w3-border settingstab"
+              >
+                <h2>Site settings</h2>
+                <span
+                  >Move form to the bottom:
+                  <select id="form_bot">
+                    <option id="fopt0" selected>No</option>
+                    <option id="fopt1">Yes</option>
+                  </select>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" id="save_settings">
+              Save settings
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <script type="text/javascript" src='http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js'></script>
+    <script
+      type="text/javascript"
+      src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js"
+    ></script>
 
-  <script>
+    <script>
       function openTab(evt, setTab) {
         var i, x, tablinks;
         x = document.getElementsByClassName("settingstab");
@@ -161,138 +323,509 @@
         document.getElementById(setTab).style.display = "block";
         evt.currentTarget.className += " w3-cyan";
       }
-      </script>
-         <script> $(function () { $('span.post_number').click(function() {
-            var data = $(this).map(function () {
-            return $(this).text();
-        }).get();
-                $('textarea').each(function (i) {
-                    var newValue = data[i];
-                    var curValue = $(this).val();
-                    newValue = newValue.slice(14);
-                    var toAppend = curValue + '>>'+ newValue;
-                    $(this).val(toAppend);
+    </script>
+    <script>
+      $(function() {
+        $("span.post_number").click(function() {
+          var data = $(this)
+            .map(function() {
+              return $(this).text();
+            })
+            .get();
+          $("textarea").each(function(i) {
+            var newValue = data[i];
+            var curValue = $(this).val();
+            newValue = newValue.slice(14);
+            var toAppend = curValue + ">>" + newValue;
+            $(this).val(toAppend);
+          });
+        });
+      });
+    </script>
 
-                });
-        
-            });
-});</script>
- 
-<script>
-  var innit = function (){
-    var pre = $('pre');
+    <script>
+      var innit = function() {
+        function addMentions(idop, idmen) {
+          var idpies = $(idop).attr("id");
+          //var orgtext = $('div#'+idmen).html();
+          var v = idpies;
+          var ww = `<a class='post_link' style='position: relative;
+  display: inline-block; padding-top:3%;
+  border-top: 0.6px solid black;' data-id="${v}" href="/obiadekchan/q/${v}">>>${v} . </a><div class="quote_preview" style="display: inline-flex; position: absolute; z-index:999;"></div>`;
 
-for(let ele of pre){
-let el = ele.innerHTML;
-let lines = el.split("\n");
-for(let line in lines){
-   if(lines[line].search("&gt;&gt;") > -1){
-       let words = lines[line].split(" ");
-       for(let word in words){
-           if(words[word].search("&gt;&gt;") === 0){
-               let w = words[word].split("&gt;&gt;")[1]
-               let toReplace = `&gt;&gt;${w}`;
-               let replacement = `<a class='post_link' style='position: relative;
+          /*if(orgtext){
+    orgtext = orgtext + ww;
+  }
+  else{
+    orgtext = ww;
+  }
+    */
+          $("div#" + idmen + ".mentions").append(ww);
+        }
+
+        var pre = $("pre");
+
+        for (let ele of pre) {
+          let el = ele.innerHTML;
+          let lines = el.split("\n");
+          for (let line in lines) {
+            if (lines[line].search("&gt;&gt;") > -1) {
+              let words = lines[line].split(" ");
+              for (let word in words) {
+                if (words[word].search("&gt;&gt;") === 0) {
+                  let w = words[word].split("&gt;&gt;")[1];
+                  let toReplace = `&gt;&gt;${w}`;
+                  let replacement = `<a class='post_link' style='position: relative;
   display: inline-block;
   border-bottom: 1px dotted black;' data-id="${w}" href="/obiadekchan/q/${w}">>>${w}</a><div class="quote_preview"     style="display: inline-flex; position: absolute; z-index:999;"></div>`;
-               words[word] = words[word].replace(toReplace, replacement);
-           }
-       }
-       lines[line] = words.join(" ");
-   }else if(lines[line].search("&gt") === 0){
-       lines[line] = `<span style="color: #789922;">${lines[line]}</span>`;
-   }
-}
-el = lines.join("\n")
-ele.innerHTML = el;
-}  }
-$(document).ready(innit);
+                  addMentions(ele, w);
+                  words[word] = words[word].replace(toReplace, replacement);
+                }
+              }
+              lines[line] = words.join(" ");
+            } else if (lines[line].search("&gt") === 0) {
+              lines[
+                line
+              ] = `<span style="color: #789922;">${lines[line]}</span>`;
+            }
+          }
+          el = lines.join("\n");
+          ele.innerHTML = el;
+        }
+      };
+      $(document).ready(innit);
+    </script>
+    <script>
+      function make_pass(length) {
+        var result = "";
+        var characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+          );
+        }
+        return result;
+      }
 
- </script>
- 
- <script>
- var init = function (){
-  
-  var sel = $('#back-col'),
-      but = $('#save_settings');
-  
-      setBackgroundColor();
-  var clearSelected = function(){
-      sel.find(':selected').prop('selected', false);
-  }
-  
-  if(localStorage.getItem('pref')){
-    var pref = localStorage.getItem('pref');
-    clearSelected();
-    //set the selected state to true on the option localStorage remembers
-    sel.find('#' + pref).prop('selected', true);
-  }
+      $(document).ready(function() {
+        if (localStorage.pwd) {
+          $("body").css("background-color", "#DADADA");
+          var pass = localStorage.pwd;
+          document.getElementById("pass").value = pass;
+          document.getElementById("pass2").value = pass;
+        } else {
+          pass = make_pass(8);
+          document.getElementById("pass").value = pass;
+          document.getElementById("pass2").value = pass;
+          localStorage.pwd = pass;
+        }
+        $("#pass").change(function() {
+          var newPass = document.getElementById("pass").value;
+          document.getElementById("pass2").value = newPass;
+          localStorage.pwd = newPass;
+          z;
+        });
+      });
+    </script>
+    <script>
+      $('pre:contains("http")').each(function(index) {
+        if ($('pre:contains("http")')) {
+          var bodytext = $(this).html();
+          var first = bodytext.indexOf("http");
+          var afterLink = bodytext.slice(first);
+          var space = afterLink.indexOf(" ");
+          if (space > 0) {
+            var link = afterLink.slice(0, space);
+          } else {
+            var link = afterLink.slice(0);
+          }
+          var toAppend = `<a href="${link}" style="color:blue;">${link}</a>`;
+          var apies = bodytext.replace(link, toAppend);
+          if ($(this).find("https")) {
+            $(this).html(apies);
+          }
+        }
+      });
+      $('pre:contains("[sp]")').each(function(index) {
+        if ($('pre:contains("[sp]")')) {
+          var bodypies = $(this).html();
+          var st = bodypies.indexOf("[sp]");
+          var lastt = bodypies.indexOf("[\/sp]");
+          var fragment = bodypies.slice(st, lastt + 5);
+          var repl = bodypies.slice(st + 4, lastt);
+          var fragmentsec = bodypies.replace(fragment, repl);
+          var placement = `<span class='spoiler'>${repl}</span>`;
+          var apiess = bodypies.replace(fragment, placement);
+          if ($(this).find("[sp]")) {
+            $(this).html(apiess);
+          }
+        }
+      });
+      $('pre:contains("[b]")').each(function(index) {
+        if ($('pre:contains("[b]")')) {
+          var text = $(this).html();
+          var st = text.indexOf('[b]');
+          var st_fragment = text.slice(st,st+3);
+          var st_span = `<span style='font-weight:bold;'>`;
+          var sec = text.indexOf('[\/b]');
+          var sec_fragment = text.slice(sec, sec+4);
+          var sec_span = `</span>`;
+          var pies = text.replace(st_fragment,st_span);
+          var apies = pies.replace(sec_fragment,sec_span);
+          if ($(this).find('[b]')) {
+            $(this).html(apies);
+          }
+        }
+      });
 
-  var setPreference = function(){
-    //remember the ID of the option the user selected
-    localStorage.setItem('pref', sel.find(':selected').attr('id'));
-  };
 
+/*
+      $('pre:contains("[b]")').each(function(index) {
+        if ($('pre:contains("[b]")')) {
+          var bodypies = $(this).html();
+          var st = bodypies.indexOf("[b]");
+          var lastt = bodypies.indexOf("[\/b]");
+          var fragment = bodypies.slice(st, lastt + 4);
+          var repl = bodypies.slice(st + 3, lastt);
+          var fragmentsec = bodypies.replace(fragment, repl);
+          var placement = `<span style='font-weight:bold;'>${repl}</span>`;
+          var apiess = bodypies.replace(fragment, placement);
+          if ($(this).find("[b]")) {
+            $(this).html(apiess);
+          }
+        }
+      });*/
+      $('pre:contains("[u]")').each(function(index) {
+        if ($('pre:contains("[u]")')) {
+          var bodypies = $(this).html();
+          var st = bodypies.indexOf("[u]");
+          var lastt = bodypies.indexOf("[\/u]");
+          var fragment = bodypies.slice(st, lastt + 4);
+          var repl = bodypies.slice(st + 3, lastt);
+          var fragmentsec = bodypies.replace(fragment, repl);
+          var placement = `<span style='text-decoration: underline;'>${repl}</span>`;
+          var apiess = bodypies.replace(fragment, placement);
+          if ($(this).find("[u]")) {
+            $(this).html(apiess);
+          }
+        }
+      });
+      $('pre:contains("[i]")').each(function(index) {
+        if ($('pre:contains("[i]")')) {
+          var bodypies = $(this).html();
+          var st = bodypies.indexOf("[i]");
+          var lastt = bodypies.indexOf("[\/i]");
+          var fragment = bodypies.slice(st, lastt + 4);
+          var repl = bodypies.slice(st + 3, lastt);
+          var fragmentsec = bodypies.replace(fragment, repl);
+          var placement = `<span style=' font-style: italic;'>${repl}</span>`;
+          var apiess = bodypies.replace(fragment, placement);
+          if ($(this).find("[i]")) {
+            $(this).html(apiess);
+          }
+        }
+      });
+    </script>
 
-  function setBackgroundColor(){
+    <script>
+      function setFont() {
+        var clearSelected = function() {
+          sel.find(":selected").prop("selected", false);
+        };
 
-    var choice = localStorage.pref;
-    switch(choice){
-      case 'opt0':
-      
-      $('body').css('background-color','#DADADA');
-      $('body').css('background-color','#DADADA');
-      break;
-      case 'opt1':
-      $('body').css('background-color','blue');
-      break;
-      case 'opt2':
-      $('body').css('background-color','yellow');
-      break;
-      case 'opt3':
-      $('body').css('background-color','black');
-      $('body').css('color','white');
-      break;
-      case 'opt4':
-      $('body').css('background-color','white');
-      break;
-    }
+        var sel = $("#reg-fnt");
 
-  }
-  
-  var save = function(){
-    setBackgroundColor();
-  }
-  
-  sel.on('change', setPreference);
-  but.on('click', save);
-};
-$(document).ready(init);
-$(document).ready(save);
- 
- 
- 
- </script>
+        if (localStorage.getItem("font")) {
+          var font = localStorage.getItem("font");
+          clearSelected();
+          //set the selected state to true on the option localStorage remembers
+          sel.find("#" + font).prop("selected", true);
+          switchFont();
+        }
 
- <script>
+        var setPreference = function() {
+          //remember the ID of the option the user selected
+          localStorage.setItem("font", sel.find(":selected").attr("id"));
+          switchFont();
+        };
 
-$(document).ready(function(){
-        $('a.post_link').mouseenter(function() {
-            var pid = $(this).data('id');
-         $(this).next('div').load('http://127.0.0.1:8000/obiadekchan/ajax/posts/'+pid);
-     });
-     $('a.post_link').mouseleave(function() {
-        $( this ).next( "div" ).empty();
-     });
-     $('#constainer').not('a.post_link').mouseenter(function(){  
-$('a.post_link').next('div').empty();
- 
-  });
-  })
- 
- 
- </script>
-   <!-- x
+        function switchFont() {
+          choice = localStorage.font;
+          switch (choice) {
+            case "rfnt0":
+              $("body").css("font-family", "Verdana,sans-serif");
+              break;
+            case "rfnt1":
+              $("body").css(
+                "font-family",
+                "Roboto,helvetica neue,Helvetica,Arial,sans-serif"
+              );
+              break;
+          }
+        }
+        var save = function() {
+          switchFont();
+        };
+
+        sel.on("change", setPreference);
+      }
+
+      $(document).ready(function() {
+        setFont();
+      });
+    </script>
+
+    <script>
+      function setBFont() {
+        switchFont();
+
+        var clearSelected = function() {
+          sel.find(":selected").prop("selected", false);
+        };
+
+        var sel = $("#post-fnt");
+
+        if (localStorage.getItem("bfont")) {
+          var font = localStorage.getItem("bfont");
+          clearSelected();
+          //set the selected state to true on the option localStorage remembers
+          sel.find("#" + font).prop("selected", true);
+          switchFont();
+        }
+
+        var setPreference = function() {
+          //remember the ID of the option the user selected
+          localStorage.setItem("bfont", sel.find(":selected").attr("id"));
+          switchFont();
+        };
+
+        function switchFont() {
+          choice = localStorage.bfont;
+          switch (choice) {
+            case "pfnt0":
+              $("pre").css(
+                "font-family",
+                'Verdana, "Bitstream Vera Sans", Geneva, sans-serif'
+              );
+              break;
+            case "pfnt1":
+              $("pre").css("font-family", "");
+              break;
+            case "pfnt2":
+              $("pre").css(
+                "font-family",
+                "Roboto,helvetica neue,Helvetica,Arial,sans-serif"
+              );
+              break;
+            case "pfnt3":
+              $("pre").css("font-family", "Verdana, Geneva, sans-serif");
+              break;
+          }
+        }
+        var save = function() {
+          switchFont();
+        };
+
+        sel.on("change", setPreference);
+      }
+
+      $(document).ready(function() {
+        setBFont();
+      });
+    </script>
+
+    <script>
+      function setFontSize() {
+        // switchFontS();
+
+        var clearSelected = function() {
+          sel.find(":selected").prop("selected", false);
+        };
+
+        var sel = $("#size-fnt");
+
+        if (localStorage.getItem("fontSize")) {
+          var font = localStorage.getItem("fontSize");
+          clearSelected();
+          //set the selected state to true on the option localStorage remembers
+          sel.find("#" + font).prop("selected", true);
+          switchFontS();
+        } else {
+          setPreference();
+        }
+
+        var setPreference = function() {
+          //remember the ID of the option the user selected
+          localStorage.setItem("fontSize", sel.find(":selected").attr("id"));
+          switchFontS();
+        };
+
+        function switchFontS() {
+          choice = localStorage.fontSize;
+          switch (choice) {
+            case "sfnt0":
+              $("body").css("font-size", "92.5%");
+              break;
+            case "sfnt1":
+              $("body").css("font-size", "75%");
+              break;
+            case "sfnt2":
+              $("body").css("font-size", "80%");
+              break;
+            case "sfnt3":
+              $("body").css("font-size", "85%");
+              break;
+            case "sfnt4":
+              $("body").css("font-size", "100%");
+              break;
+            case "sfnt5":
+              $("body").css("font-size", "110%");
+              break;
+          }
+        }
+        var save = function() {
+          switchFontS();
+        };
+
+        sel.on("change", setPreference);
+      }
+
+      $(document).ready(function() {
+        setFontSize();
+      });
+    </script> 
+   
+    <script>
+      var init = function() {
+        var sel = $("#back-col"),
+          but = $("#save_settings");
+
+        setBackgroundColor();
+        var clearSelected = function() {
+          sel.find(":selected").prop("selected", false);
+        };
+
+        if (localStorage.getItem("pref")) {
+          var pref = localStorage.getItem("pref");
+          clearSelected();
+          //set the selected state to true on the option localStorage remembers
+          sel.find("#" + pref).prop("selected", true);
+        }
+
+        var setPreference = function() {
+          //remember the ID of the option the user selected
+          localStorage.setItem("pref", sel.find(":selected").attr("id"));
+        };
+
+        function setBackgroundColor() {
+          var choice = localStorage.pref;
+          switch (choice) {
+            case "opt0":
+              $("body").css("background-color", "#DADADA");
+              $("body").css("background-color", "#DADADA");
+              break;
+            case "opt1":
+              $("body").css("background-color", "blue");
+              break;
+            case "opt2":
+              $("body").css("background-color", "yellow");
+              break;
+            case "opt3":
+              $("body").css("background-color", "black");
+              $("body").css("color", "white");
+              break;
+            case "opt4":
+              $("body").css("background-color", "white");
+              break;
+          }
+        }
+
+        var save = function() {
+          setBackgroundColor();
+        };
+
+        sel.on("change", setPreference);
+        but.on("click", save);
+      };
+      $(document).ready(init);
+    </script>
+
+    <script>
+      $(document).ready(function() {
+        $("a.post_link").mouseenter(function() {
+          var pid = $(this).data("id");
+          $(this)
+            .next("div")
+            .load("http://127.0.0.1:8000/obiadekchan/ajax/posts/" + pid);
+        });
+        $("a.post_link").mouseleave(function() {
+          $(this)
+            .next("div")
+            .empty();
+        });
+        $("#constainer")
+          .not("a.post_link")
+          .mouseenter(function() {
+            $("a.post_link")
+              .next("div")
+              .empty();
+          });
+      });
+    </script>
+
+    <script>
+      $("a.a_id").click(function(e) {
+        e.preventDefault();
+        var text = $(this).attr("id");
+        localStorage.postNumber = text;
+        link = "http://127.0.0.1:8000/obiadekchan/" + text;
+        window.location.replace(link);
+        return false;
+      });
+    </script>
+    <script>
+      $("a.an_id").click(function(e) {
+        e.preventDefault();
+        var text = $(this).attr("id");
+        localStorage.postNumber = text;
+        link = "http://127.0.0.1:8000/obiadekchan/q/" + text;
+        window.location.replace(link);
+        return false;
+      });
+    </script>
+    <script>
+      $(document).ready(function() {
+        if (localStorage.postNumber) {
+          var texxt = ">>" + localStorage.postNumber;
+          document.getElementById("id_post_body").value = texxt;
+          localStorage.removeItem("postNumber");
+        }
+      });
+    </script>
+    {%if user.is_authenticated%}
+    <script>
+      $(document).ready(function() {
+        var a = $(".userIP").html();
+        var b = a.search(" ");
+        var c = a.search(",");
+        var replacement = a.slice(b + 1, c);
+        var rep = "IP: " + replacement + ")";
+        $(".userIP").html(rep);
+      });
+    </script>
+    {%endif%}
+    <script>
+      $(document).ready(function() {
+        $(".container-heading").click(function() {
+          $(this)
+            .find(".hidden")
+            .toggleClass("open");
+        });
+      });
+    </script>
+    <!-- x
   <script>
   $(document).ready(function(){
         $('a.post_link').mouseenter(function() { 
@@ -318,7 +851,5 @@ $('a.post_link').next('div').empty();
     </script>
 
        -->
-
-            </body>
-            </html>
-        
+  </body>
+</html>

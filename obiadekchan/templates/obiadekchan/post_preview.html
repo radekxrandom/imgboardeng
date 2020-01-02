@@ -10,17 +10,17 @@
 
 <span class='preview' style=' display:inline-flex; z-index:1;
         background: #ACD7DE;
-      overflow: hidden; border: dotted;
+      ovaerflow: hidden; border: dotted;
         width: fit-content;       border-radius:7px; 
         height: fit-content; 
-        clear: both; 
+        clear: both; max-width:70%; max-height: 70%;
         '><span class='post' style='display: inline-block;padding: 2;margin-right: 10;'>
     <div class='thread_title' style='    padding: 5px;
         background-color: #ACD7DE; 
        display: flex;
-position: relative; margin-top: -40;
+position: relative; margin-top: -3em;
     margin-bottom: -60;
-'><input type='radio' name='rep_choice' value='{{post.id}}'></input>{%if post.post_title %} <span class='title'>{{post.post_title}}</span> {% endif %} {%if post.op_email%}
+'><input type='checkbox' name='rep_choice' value='{{post.id}}'></input>{%if post.post_title %} <span class='title'>{{post.post_title}}</span> {% endif %} {%if post.op_email%}
         <a href='mailto:{{post.op_email}}' style='color:darkgrey;'>Anonymouos</a> {%else%}
         <span class='name'> Anonymous</span> {%endif%}
         <span class='date'> {{post.date}} </span>
@@ -38,14 +38,14 @@ position: relative; margin-top: -40;
    '><img src='{{im.url}}' /></a>
     {%endthumbnail%} {%endif%}
     <pre style='
-      margin-top: -20;
+      margin-top: -2.5em;
 
     display: flex;
     white-space: pre-wrap;
-margin-bottom: -50px;
-    margin-inline-start: 40px;
-    margin-inline-end: 40px;
-    overflow-wrap: break-word;
+margin-bottom: -3.5em;
+    margin-inline-start: 15px;
+    margin-inline-end: 15px;
+    overflow-wrap: break-word; 
     font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important; '>{{post.post_body}}</pre>
         
         </span>

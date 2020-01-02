@@ -12,21 +12,28 @@
     </style>
 </head>
 
-<body>
+<body >
     {%block body%}
     <br>
 
     <center>
+          
         <div class='container' id='form_top'>
-
+             
             <form method='post' enctype="multipart/form-data" autocomplete="off">
                 {% csrf_token %}
                 <p>Email: {{form.op_email}}</p>
                 <p>Title: {{form.post_title}}</p>
-                <p id='thread_text'> {{form.post_body}}</p>
+                <p id='thread_text' style=' margin-bottom: 0.1%;'> {{form.post_body}}</p>
+                <b style='  
+                font-size: 64%;
+            '>[sp]spoiler[/sp] [b]bold text[/b] [u]underline[/u] [i]cursive[/i]</b><br>
+                {% if user.is_authenticated %} <input type='checkbox' name='is_mode' id='mode'><label for='mode'>Add moderator label</label> {% endif %}
+                
                 <p>{{form.image}}</p>
-                <input type='radio' name='is_mode' id='mode'><label for='mode'>Add moderator label</label>
-                <button class='btn btn-primary' type='submit' value='post_thread' name='post_thread'>Submit</button>
+                <button class='btn btn-primary' id='sbmt' type='submit' value='post_thread' name='post_thread'>Submit</button>
+                <input class="key" name='password' id='pass' type="text" autocomplete="off" />
+                
             </form>
     </center>
 
@@ -34,77 +41,124 @@
     {%load thumbnail%}
     
     <form method=post>
+        <input type='hidden' name='password' id='pass2' type='text'/>
     {%for thread in q2 %}
-    <div class='thread'style='margin-left: 30px;
-    margin-right: 30px;
+    <div class='thread'style='margin-left: 1%;
+    margin-right: 1%;
     clear: both; margain-top: 150;
     overflow: hidden;'>
-    <div class='constainer' style='margin-left: 30px;
-            maragin-right: 30px;
-            clear: both;margin-right: 550;
-    margin-bottom: 30;
+    <div class='constainer' style='
+            clear: both; margain-right: 550;
+    margin-bottom: 0.4%; disaplay: inline-flex;
             '><div class='post' style='display:block;'>
-        <div class='thread_title' style='    padding: 5px;
-            background-color: #ACD7DE; margin-bottom:10px;
-            width: 10000;    display: block;
-    position: relative; maargin-top:10a0;
-'><input type='checkbox' name='rep_choice' value='{{thread.id}}'>{%if thread.post_title %} <span class='title'>{{thread.post_title}}</span> {% endif %} {%if thread.email%}
+        <div class='thread_title' style='     padding: 0.3%;
+z-index:-1;
+            background-color: #ACD7DE;margin-bottom: 0.8%;
+            
+'><input type='checkbox' name='rep_choice' value='{{thread.id}}'>{%if thread.post_title %} <span class='title'>{{thread.post_title}}</span> {% endif %}{%if thread.is_mode%}<span style='color:#65CC2D;font-weight: bold;'> ☘️Moderator</span> {%else%} {%if thread.email%}
             <a href='mailto:{{thread.email}}'>Anonymouos</a> {%else%}
-            <span class='name'> Anonymous</span> {%endif%}
+            <span class='name'> Anonymous</span> {%endif%} {%endif%}{%if user.is_authenticated%}<span class='userIP' style='color:red;'>IP: {{thread.ip_address}}</span>{%endif%}
             <span class='date'> {{thread.date}} </span>
-            <span class='post_number'> post number: <a href='#'>{{thread.id}}</a> </span><span>  <a href='{% url "obiadekchan:thread" thread.id %}'>[Reply]</a></span></div>
+            <span class='post_number'> post number: <a href='#' class='a_id' id='{{thread.id}}'>{{thread.id}}</a></span><span><a href='{% url "obiadekchan:thread" thread.id %}'> [Reply]</a></span></div>
 
-        {%if thread.image%} {%thumbnail thread.image "240" as im %}
-        <a href='{{thread.image.url}}' target="_blank" style='    float: left;
-           margin-left: 20px;
-           margin-right: 20px;
-           margin-top: 3px;
+        {%if thread.image%} {%if thread.extension%} <div class='answer_img'>
+            <div class='file_info' style='margin-top:-0.6%; margin-left:1%;font-size:88%;margin-bottom:0.1%;'>
+        <span class='img_info'><a href='{{thread.image.url}}'style='color:grey;'>Img</a>: ({{thread.image.width}}x{{thread.image.height}},  {{thread.rep_reason}})</span>
+    </div>
+    <div class='file'>
+        <a href='{{thread.image.url}}'>
+        <img src='{{thread.image.url}}' target="_blank" style='    float: left;
+         margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 3px; max-width:240px;max-height:340px;
            margin-bottom: 0;
-           position: relative; display: block; margin-bottom: 20;
-       '><img src='{{im.url}}' /></a>
-        {%endthumbnail%} {%endif%}
-        <pre style='display: block;    white-space: pre-wrap;  
+           posiation: relative; display: flex; 
+       '/> </a></div></div>
+       {%else%}
+       {%thumbnail thread.image "240" as im %}
+        <div class='answer_img'>
+            <div class='file_info' style='margin-top:-0.6%; margin-left:1%;font-size:88%;margin-bottom:0.1%;'>
+        <span class='img_info'><a href='{{thread.image.url}}'style='color:grey;'>Img</a>: ({{im.width}}x{{im.height}},  {{thread.rep_reason}})</span>
+    </div>
+    <div class='file'>
+        <a href='{{thread.image.url}}' target="_blank" style='    float: left;
+         margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 3px;
+           margin-bottom: 0;
+           posiation: relative; display: flex; 
+       '><img src='{{im.url}}' /></a></div></div>
+        {%endthumbnail%} {%endif%}{%endif%}
+        <pre id='{{thread.id}}' style='display: block;    white-space: pre-line;  
            margin-block-start: 1em;
            margin-block-end: 1em;
-           margin-inline-start: 40px;
-           margin-inline-end: 40px;overflow-wrap: break-word; font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important; '>{{thread.post_body}}</pre>
-            
+           margin-inline-start: 15px;max-width:150ch;
+           margin-inline-end: 15px;overflow-wrap: break-word; font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important; '>{{thread.post_body}}</pre>
+           <div class='mentions' style='font-size: .8em!important;
+           padding: 0;
+           paddiang-left: 3%;
+           display: table; 'id='{{thread.id}}'> </div>
+               {%if thread.hidden%}   <span style='  font-size:87%; color:#67B0B6;'>{{thread.hidden}} posts omitted  <a href='{% url "obiadekchan:thread" thread.id %}'>[Show more]</a>{%endif%}
+                  </span>
         </div>
-        <a href='{% url "obiadekchan:thread" thread.id %}'>Show more</a>
-
+      
     </div>
    
 
 
 
     {%for answer in thread.answers %}
-    <div class='constainer' style='    display: block; boarder:solid; border-radius: 5px; baorder-color: darkgoldenrod; background: #ACD7DE;
-            max-width: 100ch;margin-right: 550;
-    margin-left: 360;'><div classs='post' style='padding: 5px;
+    <div class='constainer' style='    display: inline-flex; boarder:solid; border-radius: 5px; baorder-color: darkgoldenrod; background: #ACD7DE;
+             margin-bottom:0.4%; max-width: 50%;
+    margin-left: 1%;'><div classs='post' style='padding: 5px;
     display: inline-block;
-    margin-right: 10px;
-    margin-left: 22px;'>
-        <div class='answer_title'>{%if answer.post_title %} <span class='title'>{{answer.post_title}}</span> {% endif %}<input type='checkbox' name='rep_choice' value='{{answer.id}}'></input> {%if answer.email%}
+  ;'>
+        <div class='answer_title'><input type='checkbox' name='rep_choice' value='{{answer.id}}'></input>{%if answer.post_title %}<span class='title'> {{answer.post_title}}</span> {% endif %}{%if z.is_mode%}
+            <span style='color:#65CC2D;font-weight: bold;'> ☘️Moderator</span> 
+            {%else%}  {%if answer.email%}
             <a href='mailto:{{answer.email}}'>Anonymous</a> {%else%}
-            <span class='name'> Anonymous</span> {%endif%}
+            <span class='name'> Anonymous</span> {%endif%}{%endif%}{%if answer.is_op%}<span style='color:darkred;font-weight: bold;'>(OP)</span>{%endif%}{%if user.is_authenticated%}<span class='userIP' style='color:red;'>IP: {{thread.ip_address}}</span>{%endif%}
             <span class='date'> {{answer.date}} </span>
-            <span class='post_number'> post number: <a href='#'>{{answer.id}}</a> </span></div>
-        {%if answer.image%} {%thumbnail answer.image "240" as ima %}
+            <span class='post_number'> post number: <a href='#' class='an_id' id='{{answer.id}}'>{{answer.id}}</a> </span></div>
+        {%if answer.image%}
+        {%if answer.extension%} <div class='answer_img'>
+            <div class='file_info' style='margin-top:-0.6%; margin-left:1%;font-size:88%;margin-bottom:0.1%;'>
+        <span class='img_info'><a href='{{answer.image.url}}'style='color:grey;'>Img</a>: ({{answer.image.width}}x{{answer.image.height}},  {{answer.rep_reason}})</span>
+    </div>
+    <div class='file'>
+        <a href='{{answer.image.url}}'target="_blank" >
+        <img src='{{answer.image.url}}' style='    float: left;
+         margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 3px; max-width:240px;max-height:340px;
+           margin-bottom: 0;
+           posiation: relative; display: flex; 
+       '/> </a></div></div>
+       {%else%}
+         {%thumbnail answer.image "240" as ima %}
         <div class='answer_img'>
+            
+            <div class='file_info' style='margin-top:-0.6%; margin-left:1%;font-size:88%;margin-bottom:0.1%;'>
+                <span class='img_info'><a href='{{answer.image.url}}'style='color:grey;'>Img</a>: ({{ima.width}}x{{ima.height}},  {{answer.rep_reason}})</span>
+            </div>
+            <div class='file'>
             <a href='{{answer.image.url}}' target="_blank" style='    float: left;
-            margin-left: 20px;
-            margin-right: 20px;
-            margin-top: 3px;
-            margin-bottom: 0;
-            position: relative; display: block;
+          margin: 2%;
+   
+    
+           posiation: relative; display: flex; 
         '><img src='{{ima.url}}' /></a>
-        </div>
-        {%endthumbnail%} {%endif%}
-        <div class='p_body'><pre style='margin-block-start: 1em;
+        </div></div>
+        {%endthumbnail%} {%endif%}{%endif%}
+        <div class='p_body'><pre id='{{answer.id}}' style='margin-block-start: 1em;
                     margin-block-end: 1em;     white-space: pre-wrap;  
-                    margin-inline-start: 40px;
-                    margin-inline-end: 40px; overflow-wrap: break-word;font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important;
+                    margin-inline-start: 15px;padding-left: 3%;max-width:150ch;
+                    margin-inline-end: 15px; overflow-wrap: break-word;font-family: Verdana, "Bitstream Vera Sans", Geneva, sans-serif !important;
                     '>{{answer.post_body}}</pre></div>
+                    <div class='mentions' style='font-size: .8em!important;
+                    padding: 0;
+                    padding-left: 3%;
+                    display: table; 'id='{{answer.id}}'> </div>
 
    
 
@@ -113,10 +167,13 @@
 
     <br>
   
-    {%endfor%} </div> <br>{%endfor%}
+    {%endfor%} </div> <hr style='border:black;border-width:0.3px;border-style:solid;'>{%endfor%}
 <br><br>
+
     <button type='button' style='float:right;    margin-top: 100;' data-toggle="modal" data-target='#t_banResModal'>
         Submit report</button>
+        <button type='submit' style='float:right;    margin-top: 100;' name='delete_posts'>
+                Delete posts</button>
 
     <!-- Modal -->
     <div class="modal fade" id="t_banResModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -165,9 +222,6 @@
         </div>
     </div>
   {%endblock%}
-
-
-
 </body>
 
 </html>

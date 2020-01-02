@@ -35,17 +35,19 @@ banned_ips = []
 
 class IndexView(View):
     template_name = 'obiadekchan/index.html'
-    q2 = Post.objects.filter(is_thread=True).order_by('-thread_pos')
+    q2 = Post.objects.filter(is_thread=True).order_by('-id')
     for q in q2:
         num = len(q.replies.all())
-        q.answers = list(q.replies.all())
-        #if num > 3:
-         #   q.hidden = num - 3
+        q.answers = list(q.replies.all())[-3:]
+        if num > 3:
+            q.hidden = num - 3
     def get(self, request, *args, **kwargs):
         q2 = Post.objects.all().filter(is_thread=True).order_by('-thread_pos')
         for q in q2:
             num = len(q.replies.all())
-            q.answers = list(q.replies.all())
+            q.answers = list(q.replies.all())[-3:]
+            if num > 3:
+                q.hidden = num - 3
         #q2 = Thread.objects.all().prefetch_related('thread_ans').order_by('-thread_pos')
         paginator = Paginator(q2, 10)
         page = request.GET.get('page')
@@ -80,12 +82,24 @@ class IndexView(View):
                     xpkej.count = xpkej.id
                     if 'is_mode' in request.POST:
                         xpkej.is_mode = True
+                    xpkej.password = request.POST.get('password')
                     t_c_object.save()
                     xpkej.save()
-                    return HttpResponseRedirect(reverse('obiadekchan:index'))
+                    mail = request.POST.get('op_email')
+                    if mail.lower() == 'noko':
+                        return HttpResponseRedirect(reverse('obiadekchan:index'))                    
+                    return redirect('obiadekchan:thread',pk=xpkej.id)
                 else:
                     q2 = self.q2
                     return render(request, self.template_name, {'form':form, 'q2': q2})
+            elif 'delete_posts' in request.POST:
+                del_posts = request.POST.getlist('rep_choice')
+                for i in del_posts:
+                    post = Post.objects.get(pk=i)
+                    pwd = request.POST.get('password')
+                    if post.password == pwd:
+                        post.delete()
+                return HttpResponseRedirect(reverse('obiadekchan:index'))
             elif 'report_post' in request.POST:
                 rep_posts = request.POST.getlist('rep_choice')
                 #post = Post.objects.get(pk=request.POST['rep_choice'])
@@ -118,35 +132,55 @@ class ThreadPost(TemplateView):
 
     def post(self, request, *args, **kwargs):
         form = addPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            t_form = form.save(commit=False)
-            thread = get_object_or_404(Post, pk=self.kwargs['pk'])
-            #t_form.Thread = thread
-            from django.db.models import Max
-            from ipware import get_client_ip
-            ip_address = get_client_ip(request)
-            t_form.ip_address = ip_address
-            if checkBan(ip_address):
-                return HttpResponseRedirect(reverse('obiadekchan:banned'))
-            result = Post.objects.all().filter(is_thread=True).aggregate(Max('thread_pos'))
-            mail = request.POST.get('op_email')
-            if mail.lower() == 'sage':
-                thread.thread_pos = thread.thread_pos
-            else:
-                thread.thread_pos = bumpThread(result)
-            #t_c_object = Misc.objects.first()
-           # t_form.count = len(thread.replies.all())+1
-            t_form.is_thread = False
-            t_form.date = timezone.now()
-            #if 'is_'
-            t_form.save()
-            thread.replies.add(t_form)
-            thread.save()
-            if mail.lower() == 'noko':
-                return HttpResponseRedirect(reverse('obiadekchan:index')) 
-            return redirect('obiadekchan:thread',pk=self.kwargs['pk'])             
-
-
+        if 'post_reply' in request.POST:
+            if form.is_valid():
+                t_form = form.save(commit=False)
+                thread = get_object_or_404(Post, pk=self.kwargs['pk'])
+                #t_form.Thread = thread
+                from django.db.models import Max
+                from ipware import get_client_ip
+                ip_address = get_client_ip(request)
+                t_form.ip_address = ip_address
+                if checkBan(ip_address):
+                    return HttpResponseRedirect(reverse('obiadekchan:banned'))
+                result = Post.objects.all().filter(is_thread=True).aggregate(Max('thread_pos'))
+                mail = request.POST.get('op_email').lower()
+                if mail == 'sage':
+                    thread.thread_pos = thread.thread_pos
+                else:
+                    thread.thread_pos = bumpThread(result)
+                #t_c_object = Misc.objects.first()
+                #t_form.count = len(thread.replies.all())+1
+                t_form.is_thread = False
+                t_form.date = timezone.now()
+                if 'is_mode' in request.POST:
+                    t_form.is_mode = True
+                t_form.password = request.POST.get('password')
+                if 'is_op' in request.POST and thread.password == t_form.password:
+                    t_form.is_op = True
+                t_form.save()
+                thread.replies.add(t_form)
+                thread.save()
+                if mail.lower() == 'noko':
+                    return HttpResponseRedirect(reverse('obiadekchan:index')) 
+                return redirect('obiadekchan:thread', pk=self.kwargs['pk'])             
+        elif 'report_post' in request.POST:
+            rep_posts = request.POST.getlist('rep_choice')
+            #post = Post.objects.get(pk=request.POST['rep_choice'])
+            for i in rep_posts:
+                post = Post.objects.get(pk=i)
+                post.rep = False
+                post.rep_res = request.POST.get('r_reason')
+                post.save()
+            return HttpResponseRedirect(reverse('obiadekchan:index'))
+        elif 'delete_posts' in request.POST:
+            del_posts = request.POST.getlist('rep_choice')
+            for i in del_posts:
+                post = Post.objects.get(pk=i)
+                pwd = request.POST.get('password')
+                if post.password == pwd:
+                    post.delete()
+            return HttpResponseRedirect(reverse('obiadekchan:index'))
 
 
 class ThreadView(View):
@@ -201,6 +235,14 @@ class ModeratorView(View):
                 post.save()
                 return HttpResponseRedirect(reverse('obiadekchan:mode'))
 
+@login_required
+def history(request):
+    template_name = 'obiadekchan/history.html'
+    posts = Post.objects.all().order_by('-ip_address')
+    context = {'posts': posts}
+    return render(request, template_name, context)
+
+
 
 def logout(request):
     from django.contrib.auth import logout
@@ -216,7 +258,7 @@ def login(request):
         if user is not None:
             from django.contrib.auth import login
             login(request, user)
-            return HttpResponseRedirect(reverse('obiadekchan:index'))
+            return HttpResponseRedirect(reverse('obiadekchan:mode'))
         else:
             return HttpResponseRedirect(reverse('obiadekchan:login'))
     else:
