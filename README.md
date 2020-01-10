@@ -5,6 +5,11 @@ There is a 5 page limit with 10 posts each page, after it's reached, if somoene 
 Here's how it looks:
 ![screenshot](https://i.imgur.com/aWGjy7D.png)
 
+There is a quick reply feature. When you click given post id while holding ctrl pop up form appears on the right. In this form you can post (using AJAX) answer from main board to any thread without going into the thread first. Pop up form is draggable and can be closed.
+![sc](https://i.imgur.com/eZQcIJe.png)
+
+While inside a given thread, on the bottom you can check auto refresh feature. While turned on it checks for new posts in given threaed every x second. Waiting time increases for every unsuccessful check (increments differ), stalls at 60 seconds. Should there be any new posts, waiting time is resetted to original value. Checking and loading new posts is done with AJAX without having to reload the page. Checkbox value is remembered and set automatically the next time.
+
 There's a password (generated automatically on the front-end and stored in localStorage) which is used for deleting posts and signing them as a creator of a given thread. It is also possible to sign a post as a moderator (of course you have to be a moderator to do that).
 Users also have the ability to report posts (even multiple ones at once), and there is basic moderator panel, in which you can also sort posts by user IP.
 ![screenshot](https://i.imgur.com/e8vEJEn.png)
