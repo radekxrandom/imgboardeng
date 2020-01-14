@@ -5,10 +5,11 @@ There is a 5 page limit with 10 posts each page, after it's reached, if somoene 
 Here's how it looks:
 ![screenshot](https://i.imgur.com/aWGjy7D.png)
 
-There is a quick reply feature. When you click given post id while holding ctrl pop up form appears on the right. In this form you can post (using AJAX) answer from the main board to any thread without going into the thread first. Pop up form is draggable and can be closed.
+There is a quick reply feature. When you click given post id while holding ctrl pop up form appears on the right. In this form you can post answer (using AJAX) from the main board to any thread without going inside of it first. Pop up form is draggable and can be closed.
 ![sc](https://i.imgur.com/eZQcIJe.png)
 
-While inside a given thread, on the bottom of it, you can click checkbox in order to turn an auto refresh feature on. When turned on, it checks for a new posts in a given thread every x seconds. Waiting time increases for every unsuccessful check (increments differ), and stalls at a 60 seconds. Should there be any new posts, waiting time is reset to original value. Checking and loading new posts is done with AJAX without having to reload the page. Checkbox value is remembered and set automatically the next time.
+While inside a given thread, on the bottom of it, you can check a checkbox in order to turn the auto refresh feature on. While turned on, it checks for a new posts in a given thread every x seconds. Waiting time increases for every unsuccessful check (increments differ), and stalls at a 60 seconds. Should there be any new posts, waiting time is reset to original value. Checking and loading new posts is done with AJAX without having to reload the page. Checkbox value is remembered and set automatically the next time.
+![sc](https://i.imgur.com/rCPEYUZ.gifv)
 
 There's a password (generated automatically on the front-end and stored in localStorage) that is used for deleting posts and signing them as the creator of a given thread. It is also possible to sign posts as a moderator (of course you have to be a moderator in order to do that).
 Users also have the ability to report posts (even multiple ones at once), and there is a basic moderator panel, in which you can also sort posts by user IP.
